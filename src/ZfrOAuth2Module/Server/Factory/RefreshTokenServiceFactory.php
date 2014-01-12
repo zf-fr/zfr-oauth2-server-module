@@ -20,13 +20,13 @@ namespace ZfrOAuth2Module\Server\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrOAuth2\Server\Service\ClientService;
+use ZfrOAuth2\Server\Service\TokenService;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class ClientServiceFactory implements FactoryInterface
+class RefreshTokenServiceFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
@@ -37,9 +37,14 @@ class ClientServiceFactory implements FactoryInterface
         $options = $serviceLocator->get('ZfrOAuth2Module\Server\Options\ModuleOptions');
 
         /* @var \Doctrine\Common\Persistence\ObjectManager $objectManager */
-        $objectManager    = $serviceLocator->get($options->getObjectManager());
-        $clientRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\Client');
+        $objectManager   = $serviceLocator->get($options->getObjectManager());
+        $tokenRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\RefreshToken');
+        $scopeRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\Scope');
 
-        return new ClientService($objectManager, $clientRepository);
+        $refreshTokenService = new TokenService($objectManager, $tokenRepository, $scopeRepository);
+        $refreshTokenService->setTokenTTL($options->getRefreshTokenTtl());
+        $refreshTokenService->setDefaultScopes($options->getDefaultScopes());
+
+        return $refreshTokenService;
     }
 }

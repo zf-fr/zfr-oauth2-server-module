@@ -17,6 +17,33 @@
  */
 
 return [
+    /**
+     * IF YOU ARE USING DOCTRINE ORM WITH DOCTRINE MODULE
+     */
+    'doctrine' => [
+        'driver' => [
+            'zfr_oauth2_entity' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
+                'paths' => __DIR__ . '/../../zfr-oauth2-server/doctrine',
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'ZfrOAuth2\Server\Entity' => 'zfr_oauth2_entity',
+                ],
+            ],
+        ],
+
+        /**
+         * Set the resolver. You should change the value to your user class (or any class that
+         * implements the ZfrOAuth2/Server/Entity/TokenOwnerInterface interface
+         */
+        'entity_resolver' => [
+            'orm_default' => [
+                'ZfrOAuth2/Server/Entity/TokenOwnerInterface' => 'Application/Entity/User'
+            ]
+        ]
+    ],
+
     'zfr_oauth2_server' => [
         /**
          * Doctrine object manager key
@@ -31,9 +58,20 @@ return [
         // 'refresh_token_ttl'      => 86400,
 
         /**
+         * Default scopes to use when a token is generated, if none is specified
+         */
+        'default_scopes' => [],
+
+        /**
          * Registered grants for this server
          */
         // 'grants' => [],
+
+        /**
+         * A callable used to validate the username and password when using the
+         * password grant
+         */
+        // 'owner_callable' => null,
 
         /**
          * Grant plugin manager

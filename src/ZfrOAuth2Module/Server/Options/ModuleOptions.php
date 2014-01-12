@@ -62,6 +62,20 @@ class ModuleOptions extends AbstractOptions
     protected $refreshTokenTtl = 86400;
 
     /**
+     * Default scopes to use when a token is generated
+     *
+     * @var array
+     */
+    protected $defaultScopes = [];
+
+    /**
+     * Set the owner callable
+     *
+     * @var callable
+     */
+    protected $ownerCallable;
+
+    /**
      * Grants that the authorization server must support
      *
      * @var array
@@ -146,6 +160,46 @@ class ModuleOptions extends AbstractOptions
     public function getRefreshTokenTtl()
     {
         return $this->refreshTokenTtl;
+    }
+
+    /**
+     * Set the default scopes to use when generating a token
+     *
+     * @param array $defaultScopes
+     */
+    public function setDefaultScopes(array $defaultScopes)
+    {
+        $this->defaultScopes = $defaultScopes;
+    }
+
+    /**
+     * Get the default scopes to use when generating a token
+     *
+     * @return array
+     */
+    public function getDefaultScopes()
+    {
+        return $this->defaultScopes;
+    }
+
+    /**
+     * Set the callable used to validate a user
+     *
+     * @param callable $ownerCallable
+     */
+    public function setOwnerCallable(callable $ownerCallable)
+    {
+        $this->ownerCallable = $ownerCallable;
+    }
+
+    /**
+     * Get the callable used to validate a user
+     *
+     * @return callable
+     */
+    public function getOwnerCallable()
+    {
+        return $this->ownerCallable;
     }
 
     /**
