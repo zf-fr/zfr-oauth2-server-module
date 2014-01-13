@@ -28,10 +28,7 @@ use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
  *
  * @license MIT
  */
-class Module implements
-    BootstrapListenerInterface,
-    ConfigProviderInterface,
-    DependencyIndicatorInterface
+class Module implements BootstrapListenerInterface, ConfigProviderInterface, DependencyIndicatorInterface
 {
     /**
      * {@inheritDoc}
@@ -42,16 +39,6 @@ class Module implements
         $application    = $event->getTarget();
         $serviceManager = $application->getServiceManager();
         $eventManager   = $application->getEventManager();
-
-        /* @var \ZfrRest\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
-
-        $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\CreateResourceModelListener'));
-        $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
-
-        if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
-            $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
-        }
     }
 
     /**
@@ -59,7 +46,7 @@ class Module implements
      */
     public function getConfig()
     {
-        return include __DIR__ . '/../../config/module.config.php';
+        return include __DIR__ . '/../../../config/module.config.php';
     }
 
     /**
