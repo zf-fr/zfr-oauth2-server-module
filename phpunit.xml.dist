@@ -11,7 +11,7 @@
         backupGlobals="false"
         syntaxCheck="true"
         >
-    <testsuite name="ZfrOAuth2Server tests">
+    <testsuite name="ZfrOAuth2ServerModule tests">
         <directory>./tests</directory>
     </testsuite>
     <filter>
