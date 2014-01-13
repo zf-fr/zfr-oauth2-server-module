@@ -38,6 +38,36 @@ return [
         ]
     ],
 
+    'router' => [
+        'routes' => [
+            'zfr-oauth2-server' => [
+                'type'    => 'Literal',
+                'options' => [
+                    'route' => '/oauth'
+                ],
+                'may_terminate' => false,
+                'child_routes'  => [
+                    'authorize' => [
+                        'type'    => 'Literal',
+                        'options' => [
+                            'route'    => '/authorize',
+                            'defaults' => [
+                                'controller' => 'ZfrOAuth2Module\Server\Controller\AuthorizationController'
+                            ]
+                        ]
+                    ],
+
+                    'token' => [
+                        'type'    => 'Literal',
+                        'options' => [
+                            'route' => '/token'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ],
+
     'zfr_oauth2_server' => [
         'grant_manager' => []
     ]
