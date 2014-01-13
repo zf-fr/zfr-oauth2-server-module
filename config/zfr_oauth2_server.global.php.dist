@@ -18,7 +18,17 @@
 
 return [
     /**
-     * IF YOU ARE USING DOCTRINE ORM WITH DOCTRINE MODULE
+     * Uncomment the factory if you are using a stateless REST API and want to authenticate your users
+     * using the access tokens
+     */
+    'service_manager' => [
+        'factories' => [
+            // 'Zend\Authentication\AuthenticationService' => 'ZfrOAuth2Module\Server\Factory\AuthenticationServiceFactory'
+        ]
+    ],
+
+    /**
+     * Use this config if you are using Doctrine 2 ORM. Otherwise, you can delete it
      */
     'doctrine' => [
         'driver' => [
