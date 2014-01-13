@@ -29,11 +29,6 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * @var bool
-     */
-    protected $__strictMode__ = false;
-
-    /**
      * Object manager key
      *
      * @var string|null
@@ -81,6 +76,15 @@ class ModuleOptions extends AbstractOptions
      * @var array
      */
     protected $grants = [];
+
+    /**
+     * @param array|null $options
+     */
+    public function __construct($options = null)
+    {
+        $this->__strictMode__ = false;
+        parent::__construct($options);
+    }
 
     /**
      * Set the object manager key
