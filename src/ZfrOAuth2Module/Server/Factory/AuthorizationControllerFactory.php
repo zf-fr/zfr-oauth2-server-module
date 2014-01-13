@@ -16,43 +16,24 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module\Server\Controller;
+namespace ZfrOAuth2Module\Server\Factory;
 
-use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZfrOAuth2\Server\AuthorizationServer;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrOAuth2Module\Server\Controller\AuthorizationController;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class TokenController extends AbstractActionController
+class AuthorizationControllerFactory implements FactoryInterface
 {
     /**
-     * @var AuthorizationServer
+     * {@inheritDoc}
      */
-    protected $authorizationServer;
-
-    /**
-     * @param AuthorizationServer $authorizationServer
-     */
-    public function __construct(AuthorizationServer $authorizationServer)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $this->authorizationServer = $authorizationServer;
-    }
-
-    /**
-     * Handle a token request
-     *
-     * @return \Zend\Http\Response|null
-     */
-    public function tokenAction()
-    {
-        // Can't do anything if not HTTP request...
-        if (!$this->request instanceof HttpRequest) {
-            return;
-        }
-
-        return $this->authorizationServer->handleTokenRequest($this->request);
+        $parentLocator = $serviceLocator->getServiceLocator();
+        return new AuthorizationController($parentLocator->get('ZfrOAuth2\Server\AuthorizationServer'));
     }
 }

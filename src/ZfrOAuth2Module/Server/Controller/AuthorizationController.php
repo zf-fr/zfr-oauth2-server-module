@@ -19,6 +19,7 @@
 namespace ZfrOAuth2Module\Server\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use ZfrOAuth2\Server\AuthorizationServer;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -26,4 +27,21 @@ use Zend\Mvc\Controller\AbstractActionController;
  */
 class AuthorizationController extends AbstractActionController
 {
+    /**
+     * @var AuthorizationServer
+     */
+    protected $authorizationServer;
+
+    /**
+     * @param AuthorizationServer $authorizationServer
+     */
+    public function __construct(AuthorizationServer $authorizationServer)
+    {
+        $this->authorizationServer = $authorizationServer;
+    }
+
+    public function authorizeAction()
+    {
+        // @TODO
+    }
 }

@@ -16,43 +16,34 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module\Server\Controller;
+namespace ZfrOAuth2ModuleTest\Server\Factory;
 
-use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZfrOAuth2\Server\AuthorizationServer;
+use Zend\ServiceManager\ServiceManager;
+use ZfrOAuth2Module\Server\Factory\ClientCredentialsGrantFactory;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ *
+ * @covers ZfrOAuth2Module\Server\Factory\ClientCredentialsGrantFactory
  */
-class TokenController extends AbstractActionController
+class ClientCredentialsGrantFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var AuthorizationServer
-     */
-    protected $authorizationServer;
-
-    /**
-     * @param AuthorizationServer $authorizationServer
-     */
-    public function __construct(AuthorizationServer $authorizationServer)
+    public function testCanCreateFromFactory()
     {
-        $this->authorizationServer = $authorizationServer;
-    }
+        $serviceManager = new ServiceManager();
 
-    /**
-     * Handle a token request
-     *
-     * @return \Zend\Http\Response|null
-     */
-    public function tokenAction()
-    {
-        // Can't do anything if not HTTP request...
-        if (!$this->request instanceof HttpRequest) {
-            return;
-        }
+        $pluginManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $pluginManager->expects($this->once())->method('getServiceLocator')->will($this->returnValue($serviceManager));
 
-        return $this->authorizationServer->handleTokenRequest($this->request);
+        $serviceManager->setService(
+            'ZfrOAuth2\Server\Service\AccessTokenService',
+            $this->getMock('ZfrOAuth2\Server\Service\TokenService', [], [], '', false)
+        );
+
+        $factory = new ClientCredentialsGrantFactory();
+        $service = $factory->createService($pluginManager);
+
+        $this->assertInstanceOf('ZfrOAuth2\Server\Grant\ClientCredentialsGrant', $service);
     }
 }
