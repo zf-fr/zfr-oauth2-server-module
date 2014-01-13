@@ -34,7 +34,7 @@ class AccessTokenAdapterFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $accessTokenAdapter = new AccessTokenAdapter($serviceLocator->get('ZfrOAuth2\Server\ResourceServer'));
-        $accessTokenAdapter->setRequest($serviceLocator->get('Request'));
+        $accessTokenAdapter->setRequest($serviceLocator->get('Application')->get('Request'));
 
         return $accessTokenAdapter;
     }
