@@ -52,7 +52,8 @@ return [
                         'options' => [
                             'route'    => '/authorize',
                             'defaults' => [
-                                'controller' => 'ZfrOAuth2Module\Server\Controller\AuthorizationController'
+                                'controller' => 'ZfrOAuth2Module\Server\Controller\AuthorizationController',
+                                'action'     => 'authorize'
                             ]
                         ]
                     ],
@@ -60,7 +61,11 @@ return [
                     'token' => [
                         'type'    => 'Literal',
                         'options' => [
-                            'route' => '/token'
+                            'route'    => '/token',
+                            'defaults' => [
+                                'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
+                                'action'     => 'token'
+                            ]
                         ]
                     ]
                 ]

@@ -16,26 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module\Server\Factory;
+namespace ZfrOAuth2ModuleTest\Server\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter;
+use Zend\ServiceManager\ServiceManager;
+use ZfrOAuth2Module\Server\Factory\AuthenticationServiceFactory;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ *
+ * @covers ZfrOAuth2Module\Server\Factory\AuthenticationServiceFactory
  */
-class AccessTokenAdapterFactory implements FactoryInterface
+class AuthenticationServiceFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function testCanCreateFromFactory()
     {
-        $accessTokenAdapter = new AccessTokenAdapter($serviceLocator->get('ZfrOAuth2\Server\ResourceServer'));
-        $accessTokenAdapter->setRequest($serviceLocator->get('Application')->getRequest());
+        $serviceManager = new ServiceManager();
 
-        return $accessTokenAdapter;
+        $serviceManager->setService(
+            'ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter',
+            $this->getMock('Zend\Authentication\Adapter\AdapterInterface')
+        );
+
+        $factory = new AuthenticationServiceFactory();
+        $service = $factory->createService($serviceManager);
+
+        $this->assertInstanceOf('Zend\Authentication\AuthenticationService', $service);
+        $this->assertInstanceOf('Zend\Authentication\Storage\NonPersistent', $service->getStorage());
     }
 }

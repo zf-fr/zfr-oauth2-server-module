@@ -1,4 +1,4 @@
-# ZfrOAuth2Server
+# ZfrOAuth2ServerModule
 
 [![Build Status](https://travis-ci.org/zf-fr/zfr-oauth2-server.png)](https://travis-ci.org/zf-fr/zfr-oauth2-server)
 [![Latest Stable Version](https://poser.pugx.org/zfr/zfr-oauth2-server/v/stable.png)](https://packagist.org/packages/zfr/zfr-oauth2-server)
@@ -6,17 +6,8 @@
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/zf-fr/zfr-oauth2-server/badges/quality-score.png?s=be36235c9898cfc55044f58d9bba789d2d4d102e)](https://scrutinizer-ci.com/g/zf-fr/zfr-oauth2-server/)
 [![Total Downloads](https://poser.pugx.org/zfr/zfr-oauth2-server/downloads.png)](https://packagist.org/packages/zfr/zfr-oauth2-server)
 
-ZfrOAuth2Server is a PHP library that aims to implement the OAuth 2 specification strictly. Contrary to other
-libraries, it assumes you are using Doctrine, and provide various services based on Doctrine interfaces.
-
-Currently, it's more of a proof of concept to implement a simpler and cleaner OAuth 2 server implementation. It
-does not support yet the Implicit grant. If you want to help, please contribute!
-
-If you need a full featured project, that was tested by thousands of people, I suggest you to have a look
-at one of those two PHP libraries:
-
-- [OAuth2 Server from PHP-League](https://github.com/php-loep/oauth2-server)
-- [OAuth2 Server from Brent Shaffer](https://github.com/bshaffer/oauth2-server-php)
+ZfrOAuth2ServerModule is a Zend Framework 2 module for ZfrOAuth2Server. Its goal is to easily create a OAuth 2
+compliant server.
 
 ## Requirements
 
@@ -36,5 +27,63 @@ Installation is only officially supported using Composer:
 php composer.phar require zfr/zfr-oauth2-server-module:0.1.*
 ```
 
+Copy-paste the `zfr_oauth2_server.global.php.dist` file to your `autoload` folder, and enable the module by adding
+`ZfrOAuth2Module` to your `application.config.php` file.
+
 ## Documentation
 
+### Configuring the module
+
+ZfrOAuth2Module provides a lot of default configuration. However, there are some information you need to provide.
+
+#### Setting the User class
+
+When a token is generated, it is automatically linked to an owner. Most of the time, it will be a user. For this
+mapping to work, you must make sure your user class implements the `ZfrOAuth2\Server\Entity\TokenOwnerInterface`
+interface. Then, you need to modify the Doctrine mapping to associate this interface with your own user
+class. The code is already set in the `zfr_oauth2_server.global.php.dist` file:
+
+```php
+return [
+    'doctrine' => [
+        'entity_resolver' => [
+            'orm_default' => [
+                'ZfrOAuth2/Server/Entity/TokenOwnerInterface' => 'Application/Entity/User'
+            ]
+        ]
+    ]
+]
+```
+
+#### Adding grant types
+
+By default, your OAuth2 server does not support anything. You must configure it by adding all the grants you
+want to support. For instance, the following config will make your server compatible with the "User credentials"
+grant as well as the "Refresh token" grant:
+
+```php
+return [
+    'zfr_oauth2_server' => [
+        'grants' => [
+            'ZfrOAuth2\Server\Grant\PasswordGrant',
+            'ZfrOauth2\Server\Grant\RefreshTokenGrant'
+        ]
+    ]
+]
+```
+
+#### Specifying a callable for validating password and username
+
+When using the "User credentials" grant (also called the Password grant), the username and password are automatically
+passed to a callable. If the callable return a `TokenOwnerInterface` instance, then it's considered as valid and
+the access token is created. Otherwise, an error is thrown.
+
+```php
+return [
+    'zfr_oauth2_server' => [
+        'owner_callable' => function($username, $password) {
+            // If valid, return the user, otherwise return null
+        }
+    ]
+];
+```
