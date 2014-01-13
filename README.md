@@ -1,10 +1,9 @@
 # ZfrOAuth2ServerModule
 
-[![Build Status](https://travis-ci.org/zf-fr/zfr-oauth2-server.png)](https://travis-ci.org/zf-fr/zfr-oauth2-server)
-[![Latest Stable Version](https://poser.pugx.org/zfr/zfr-oauth2-server/v/stable.png)](https://packagist.org/packages/zfr/zfr-oauth2-server)
-[![Coverage Status](https://coveralls.io/repos/zf-fr/zfr-oauth2-server/badge.png)](https://coveralls.io/r/zf-fr/zfr-oauth2-server)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/zf-fr/zfr-oauth2-server/badges/quality-score.png?s=be36235c9898cfc55044f58d9bba789d2d4d102e)](https://scrutinizer-ci.com/g/zf-fr/zfr-oauth2-server/)
-[![Total Downloads](https://poser.pugx.org/zfr/zfr-oauth2-server/downloads.png)](https://packagist.org/packages/zfr/zfr-oauth2-server)
+[![Build Status](https://travis-ci.org/zf-fr/zfr-oauth2-server-module.png?branch=master)](https://travis-ci.org/zf-fr/zfr-oauth2-server-module)
+[![Latest Stable Version](https://poser.pugx.org/zfr/zfr-oauth2-server-module/v/stable.png)](https://packagist.org/packages/zfr/zfr-oauth2-server-module)
+[![Coverage Status](https://coveralls.io/repos/zf-fr/zfr-oauth2-server-module/badge.png)](https://coveralls.io/r/zf-fr/zfr-oauth2-server-module)
+[![Total Downloads](https://poser.pugx.org/zfr/zfr-oauth2-server-module/downloads.png)](https://packagist.org/packages/zfr/zfr-oauth2-server-module)
 
 ZfrOAuth2ServerModule is a Zend Framework 2 module for ZfrOAuth2Server. Its goal is to easily create a OAuth 2
 compliant server.
