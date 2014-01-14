@@ -40,7 +40,7 @@ class AccessTokenServiceFactory implements FactoryInterface
         $objectManager   = $serviceLocator->get($options->getObjectManager());
         $tokenRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\AccessToken');
 
-        /* @var \ZfrOAuth2Module\Server\Service\ScopeService $scopeService */
+        /* @var \ZfrOAuth2\Server\Service\ScopeService $scopeService */
         $scopeService = $serviceLocator->get('ZfrOAuth2\Server\Service\ScopeService');
 
         $accessTokenService = new TokenService($objectManager, $tokenRepository, $scopeService);
