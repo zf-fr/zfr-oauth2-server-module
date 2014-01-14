@@ -47,10 +47,10 @@ class AccessTokenServiceFactoryTest extends \PHPUnit_Framework_TestCase
                       ->with('ZfrOAuth2\Server\Entity\AccessToken')
                       ->will($this->returnValue($this->getMock('Doctrine\Common\Persistence\ObjectRepository')));
 
-        $objectManager->expects($this->at(1))
-                      ->method('getRepository')
-                      ->with('ZfrOAuth2\Server\Entity\Scope')
-                      ->will($this->returnValue($this->getMock('Doctrine\Common\Persistence\ObjectRepository')));
+        $serviceManager->setService(
+            'ZfrOAuth2\Server\Service\ScopeService',
+            $this->getMock('ZfrOAuth2\Server\Service\ScopeService', [], [], '', false)
+        );
 
         $factory = new AccessTokenServiceFactory();
         $service = $factory->createService($serviceManager);

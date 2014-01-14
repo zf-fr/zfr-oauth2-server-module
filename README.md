@@ -86,3 +86,5 @@ return [
     ]
 ];
 ```
+
+You can also pass a service key, that will be pulled from the service manager, if you need to inject dependencies.

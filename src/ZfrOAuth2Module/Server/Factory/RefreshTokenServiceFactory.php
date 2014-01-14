@@ -39,11 +39,12 @@ class RefreshTokenServiceFactory implements FactoryInterface
         /* @var \Doctrine\Common\Persistence\ObjectManager $objectManager */
         $objectManager   = $serviceLocator->get($options->getObjectManager());
         $tokenRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\RefreshToken');
-        $scopeRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\Scope');
 
-        $refreshTokenService = new TokenService($objectManager, $tokenRepository, $scopeRepository);
+        /* @var \ZfrOAuth2Module\Server\Service\ScopeService $scopeService */
+        $scopeService = $serviceLocator->get('ZfrOAuth2\Server\Service\ScopeService');
+
+        $refreshTokenService = new TokenService($objectManager, $tokenRepository, $scopeService);
         $refreshTokenService->setTokenTTL($options->getRefreshTokenTtl());
-        $refreshTokenService->setDefaultScopes($options->getDefaultScopes());
 
         return $refreshTokenService;
     }

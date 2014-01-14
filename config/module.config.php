@@ -25,6 +25,7 @@ return [
             'ZfrOAuth2\Server\AuthorizationServer'                             => 'ZfrOAuth2Module\Server\Factory\AuthorizationServerFactory',
             'ZfrOAuth2\Server\ResourceServer'                                  => 'ZfrOAuth2Module\Server\Factory\ResourceServerFactory',
             'ZfrOAuth2\Server\Service\ClientService'                           => 'ZfrOAuth2Module\Server\Factory\ClientServiceFactory',
+            'ZfrOAuth2\Server\Service\ScopeService'                            => 'ZfrOAuth2Module\Server\Factory\ScopeServiceFactory',
             'ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter' => 'ZfrOAuth2Module\Server\Factory\AccessTokenAdapterFactory',
             'ZfrOAuth2Module\Server\Options\ModuleOptions'                     => 'ZfrOAuth2Module\Server\Factory\ModuleOptionsFactory',
             'ZfrOAuth2Module\Server\Grant\GrantPluginManager'                  => 'ZfrOAuth2Module\Server\Factory\GrantPluginManagerFactory',

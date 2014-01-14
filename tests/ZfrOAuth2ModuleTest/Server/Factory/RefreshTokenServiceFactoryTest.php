@@ -47,10 +47,10 @@ class RefreshTokenServiceFactoryTest extends \PHPUnit_Framework_TestCase
                       ->with('ZfrOAuth2\Server\Entity\RefreshToken')
                       ->will($this->returnValue($this->getMock('Doctrine\Common\Persistence\ObjectRepository')));
 
-        $objectManager->expects($this->at(1))
-                      ->method('getRepository')
-                      ->with('ZfrOAuth2\Server\Entity\Scope')
-                      ->will($this->returnValue($this->getMock('Doctrine\Common\Persistence\ObjectRepository')));
+        $serviceManager->setService(
+            'ZfrOAuth2\Server\Service\ScopeService',
+            $this->getMock('ZfrOAuth2\Server\Service\ScopeService', [], [], '', false)
+        );
 
         $factory = new RefreshTokenServiceFactory();
         $service = $factory->createService($serviceManager);

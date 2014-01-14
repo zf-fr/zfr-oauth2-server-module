@@ -39,11 +39,12 @@ class AuthorizationCodeServiceFactory implements FactoryInterface
         /* @var \Doctrine\Common\Persistence\ObjectManager $objectManager */
         $objectManager   = $serviceLocator->get($options->getObjectManager());
         $tokenRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\AuthorizationCode');
-        $scopeRepository = $objectManager->getRepository('ZfrOAuth2\Server\Entity\Scope');
 
-        $authorizationCodeService = new TokenService($objectManager, $tokenRepository, $scopeRepository);
+        /* @var \ZfrOAuth2Module\Server\Service\ScopeService $scopeService */
+        $scopeService = $serviceLocator->get('ZfrOAuth2\Server\Service\ScopeService');
+
+        $authorizationCodeService = new TokenService($objectManager, $tokenRepository, $scopeService);
         $authorizationCodeService->setTokenTTL($options->getAuthorizationCodeTtl());
-        $authorizationCodeService->setDefaultScopes($options->getDefaultScopes());
 
         return $authorizationCodeService;
     }

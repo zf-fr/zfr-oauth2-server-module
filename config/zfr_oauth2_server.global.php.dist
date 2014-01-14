@@ -68,11 +68,6 @@ return [
         // 'refresh_token_ttl'      => 86400,
 
         /**
-         * Default scopes to use when a token is generated, if none is specified
-         */
-        'default_scopes' => [],
-
-        /**
          * Registered grants for this server
          */
         // 'grants' => [],

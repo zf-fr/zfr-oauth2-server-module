@@ -37,18 +37,14 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
             'authorization_code_ttl' => 300,
             'access_token_ttl'       => 3000,
             'refresh_token_ttl'      => 30000,
-            'default_scopes'         => ['read'],
             'owner_callable'         => $callable,
-            'grants'                 => [
-                'ZfrOAuth2\Server\Grant\ClientCredentialsGrant'
-            ]
+            'grants'                 => ['ZfrOAuth2\Server\Grant\ClientCredentialsGrant']
         ]);
 
         $this->assertEquals('my_object_manager', $options->getObjectManager());
         $this->assertEquals(300, $options->getAuthorizationCodeTtl());
         $this->assertEquals(3000, $options->getAccessTokenTtl());
         $this->assertEquals(30000, $options->getRefreshTokenTtl());
-        $this->assertEquals(['read'], $options->getDefaultScopes());
         $this->assertSame($callable, $options->getOwnerCallable());
         $this->assertEquals(['ZfrOAuth2\Server\Grant\ClientCredentialsGrant'], $options->getGrants());
     }
