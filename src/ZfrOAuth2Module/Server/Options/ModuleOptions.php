@@ -66,7 +66,7 @@ class ModuleOptions extends AbstractOptions
     /**
      * Set the owner callable
      *
-     * @var callable
+     * @var callable|string
      */
     protected $ownerCallable;
 
@@ -187,11 +187,11 @@ class ModuleOptions extends AbstractOptions
     }
 
     /**
-     * Set the callable used to validate a user
+     * Set the callable used to validate a user (or service name)
      *
-     * @param callable $ownerCallable
+     * @param callable|string $ownerCallable
      */
-    public function setOwnerCallable(callable $ownerCallable)
+    public function setOwnerCallable($ownerCallable)
     {
         $this->ownerCallable = $ownerCallable;
     }
@@ -199,7 +199,7 @@ class ModuleOptions extends AbstractOptions
     /**
      * Get the callable used to validate a user
      *
-     * @return callable
+     * @return callable|string
      */
     public function getOwnerCallable()
     {

@@ -38,12 +38,15 @@ class PasswordGrantFactory implements FactoryInterface
         /* @var \ZfrOAuth2Module\Server\Options\ModuleOptions $options */
         $options = $parentLocator->get('ZfrOAuth2Module\Server\Options\ModuleOptions');
 
+        $ownerCallable = $options->getOwnerCallable();
+        $ownerCallable = is_string($ownerCallable) ? $parentLocator->get($ownerCallable) : $ownerCallable;
+
         /* @var \ZfrOAuth2\Server\Service\TokenService $accessTokenService */
         $accessTokenService = $parentLocator->get('ZfrOAuth2\Server\Service\AccessTokenService');
 
         /* @var \ZfrOAuth2\Server\Service\TokenService $refreshTokenService */
         $refreshTokenService = $parentLocator->get('ZfrOAuth2\Server\Service\RefreshTokenService');
 
-        return new PasswordGrant($accessTokenService, $refreshTokenService, $options->getOwnerCallable());
+        return new PasswordGrant($accessTokenService, $refreshTokenService, $ownerCallable);
     }
 }
