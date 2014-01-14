@@ -36,7 +36,7 @@ class PasswordGrantFactory implements FactoryInterface
         $parentLocator = $serviceLocator->getServiceLocator();
 
         /* @var \ZfrOAuth2Module\Server\Options\ModuleOptions $options */
-        $options = $serviceLocator->get('ZfrOAuth2Module\Server\Options\ModuleOptions');
+        $options = $parentLocator->get('ZfrOAuth2Module\Server\Options\ModuleOptions');
 
         /* @var \ZfrOAuth2\Server\Service\TokenService $accessTokenService */
         $accessTokenService = $parentLocator->get('ZfrOAuth2\Server\Service\AccessTokenService');
