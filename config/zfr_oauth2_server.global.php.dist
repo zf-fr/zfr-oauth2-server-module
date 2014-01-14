@@ -32,13 +32,13 @@ return [
      */
     'doctrine' => [
         'driver' => [
-            'zfr_oauth2_entity' => [
+            'zfr_oauth2_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
                 'paths' => __DIR__ . '/../../zfr-oauth2-server/config/doctrine',
             ],
             'orm_default' => [
                 'drivers' => [
-                    'ZfrOAuth2\Server\Entity' => 'zfr_oauth2_entity',
+                    'ZfrOAuth2\Server\Entity' => 'zfr_oauth2_driver',
                 ],
             ],
         ],
