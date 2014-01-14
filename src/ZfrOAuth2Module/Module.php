@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module\Server;
+namespace ZfrOAuth2Module;
 
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
@@ -46,7 +46,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Dep
      */
     public function getConfig()
     {
-        return include __DIR__ . '/../../../config/module.config.php';
+        return include __DIR__ . '/../../config/module.config.php';
     }
 
     /**
