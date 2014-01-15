@@ -31,18 +31,6 @@ return [
      * Use this config if you are using Doctrine 2 ORM. Otherwise, you can delete it
      */
     'doctrine' => [
-        'driver' => [
-            'zfr_oauth2_driver' => [
-                'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
-                'paths' => __DIR__ . '/../../zfr-oauth2-server/config/doctrine',
-            ],
-            'orm_default' => [
-                'drivers' => [
-                    'ZfrOAuth2\Server\Entity' => 'zfr_oauth2_driver',
-                ],
-            ],
-        ],
-
         /**
          * Set the resolver. You should change the value to your user class (or any class that
          * implements the ZfrOAuth2/Server/Entity/TokenOwnerInterface interface
