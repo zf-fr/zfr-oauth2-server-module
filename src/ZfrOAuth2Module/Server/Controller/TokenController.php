@@ -74,6 +74,6 @@ class TokenController extends AbstractActionController
         $accessTokenService = $this->serviceLocator->get('ZfrOAuth2\Server\Service\AccessTokenService');
         $accessTokenService->deleteExpiredTokens();
 
-        return 'Expired access tokens were properly deleted';
+        return "\nExpired access tokens were properly deleted!\n\n";
     }
 }

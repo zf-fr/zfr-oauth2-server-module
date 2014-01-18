@@ -74,7 +74,7 @@ class AccessTokenAdapter implements AdapterInterface
             return new AuthenticationResult(
                 AuthenticationResult::FAILURE,
                 null,
-                ['Unable to authenticate the user with the access token']
+                ['You are not authorized to perform this action']
             );
         }
 
