@@ -88,3 +88,8 @@ return [
 ```
 
 You can also pass a service key, that will be pulled from the service manager, if you need to inject dependencies.
+
+### Delete expired tokens
+
+ZfrOAuth2Module offers a console route you can use to delete expired access tokens. You can use this as a CRON
+task to clean your database. In the `public` folder, use the following command: `php index.php oauth2 delete expired tokens`.
