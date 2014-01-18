@@ -88,6 +88,23 @@ return [
         ]
     ],
 
+    'console' => [
+        'router' => [
+            'routes' => [
+                'delete-expired-tokens' => [
+                    'type'    => 'Simple',
+                    'options' => [
+                        'route'    => 'oauth2 delete expired tokens',
+                        'defaults' => [
+                            'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
+                            'action'     => 'delete-expired-tokens'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ],
+
     'controllers' => [
         'factories' => [
             'ZfrOAuth2Module\Server\Controller\AuthorizationController' => 'ZfrOAuth2Module\Server\Factory\AuthorizeControllerFactory',

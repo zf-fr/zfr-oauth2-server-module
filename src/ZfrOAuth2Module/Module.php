@@ -18,9 +18,10 @@
 
 namespace ZfrOAuth2Module;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\Console\Adapter\AdapterInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
 
 /**
@@ -28,19 +29,12 @@ use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
  *
  * @license MIT
  */
-class Module implements BootstrapListenerInterface, ConfigProviderInterface, DependencyIndicatorInterface
+class Module implements
+    ConfigProviderInterface,
+    ConsoleBannerProviderInterface,
+    ConsoleUsageProviderInterface,
+    DependencyIndicatorInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function onBootstrap(EventInterface $event)
-    {
-        /* @var $application \Zend\Mvc\Application */
-        $application    = $event->getTarget();
-        $serviceManager = $application->getServiceManager();
-        $eventManager   = $application->getEventManager();
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -55,5 +49,23 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface, Dep
     public function getModuleDependencies()
     {
         return ['DoctrineModule'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConsoleBanner(AdapterInterface $console)
+    {
+        return 'ZfrOAuth2Server';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConsoleUsage(AdapterInterface $console)
+    {
+        return [
+            'oauth2 delete expired tokens' => 'Delete expired access tokens'
+        ];
     }
 }

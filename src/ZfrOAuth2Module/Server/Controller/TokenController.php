@@ -18,9 +18,11 @@
 
 namespace ZfrOAuth2Module\Server\Controller;
 
+use Zend\Console\Request as ConsoleRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZfrOAuth2\Server\AuthorizationServer;
+use ZfrOAuth2Module\Server\Exception\RuntimeException;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -54,5 +56,24 @@ class TokenController extends AbstractActionController
         }
 
         return $this->authorizationServer->handleTokenRequest($this->request);
+    }
+
+    /**
+     * Delete expired tokens
+     *
+     * @return string
+     * @throws RuntimeException
+     */
+    public function deleteExpiredTokensAction()
+    {
+        if (!$this->request instanceof ConsoleRequest) {
+            throw new RuntimeException('You can only use this action from console');
+        }
+
+        /* @var \ZfrOAuth2\Server\Service\TokenService $accessTokenService */
+        $accessTokenService = $this->serviceLocator->get('ZfrOAuth2\Server\Service\AccessTokenService');
+        $accessTokenService->deleteExpiredTokens();
+
+        return 'Expired access tokens were properly deleted';
     }
 }
