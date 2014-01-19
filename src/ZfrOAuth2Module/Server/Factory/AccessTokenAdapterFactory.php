@@ -18,6 +18,7 @@
 
 namespace ZfrOAuth2Module\Server\Factory;
 
+use Zend\Http\Request as HttpRequest;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter;
@@ -34,7 +35,13 @@ class AccessTokenAdapterFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $accessTokenAdapter = new AccessTokenAdapter($serviceLocator->get('ZfrOAuth2\Server\ResourceServer'));
-        $accessTokenAdapter->setRequest($serviceLocator->get('Application')->getRequest());
+
+        // It only makes sense to set the request if it is HTTP request
+        $request = $serviceLocator->get('Application')->getRequest();
+
+        if ($request instanceof HttpRequest) {
+            $accessTokenAdapter->setRequest($request);
+        }
 
         return $accessTokenAdapter;
     }
