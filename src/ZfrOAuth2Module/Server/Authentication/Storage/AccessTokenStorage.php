@@ -16,27 +16,60 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module\Server\Factory;
+namespace ZfrOAuth2Module\Server\Authentication\Storage;
 
-use Zend\Authentication\AuthenticationService;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Authentication\Storage\NonPersistent;
+use Zend\Http\Request as HttpRequest;
+use ZfrOAuth2\Server\ResourceServer;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class AuthenticationServiceFactory implements FactoryInterface
+class AccessTokenStorage extends NonPersistent
 {
+    /**
+     * @var ResourceServer
+     */
+    protected $resourceServer;
+
+    /**
+     * @var HttpRequest
+     */
+    protected $request;
+
+    /**
+     * @param ResourceServer $resourceServer
+     */
+    public function __construct(ResourceServer $resourceServer)
+    {
+        $this->resourceServer = $resourceServer;
+    }
+
+    /**
+     * Set the HTTP request
+     *
+     * @param  HttpRequest $request
+     * @return void
+     */
+    public function setRequest(HttpRequest $request)
+    {
+        $this->request = $request;
+    }
+
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function isEmpty()
     {
-        // When using an API based on a REST API, the authentication is stateless
-        return new AuthenticationService(
-            $serviceLocator->get('ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage'),
-            $serviceLocator->get('ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter')
-        );
+        return $this->resourceServer->getAccessToken($this->request) === null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function read()
+    {
+        return $this->resourceServer->getAccessToken($this->request)->getOwner();
     }
 }

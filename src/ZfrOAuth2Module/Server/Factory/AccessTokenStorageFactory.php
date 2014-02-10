@@ -16,36 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2ModuleTest\Server\Factory;
+namespace ZfrOAuth2Module\Server\Factory;
 
-use Zend\ServiceManager\ServiceManager;
-use ZfrOAuth2Module\Server\Factory\AuthenticationServiceFactory;
+use Zend\Http\Request as HttpRequest;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
- *
- * @covers ZfrOAuth2Module\Server\Factory\AuthenticationServiceFactory
  */
-class AuthenticationServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class AccessTokenStorageFactory implements FactoryInterface
 {
-    public function testCanCreateFromFactory()
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $serviceManager = new ServiceManager();
+        $accessTokenStorage = new AccessTokenStorage($serviceLocator->get('ZfrOAuth2\Server\ResourceServer'));
 
-        $serviceManager->setService(
-            'ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage',
-            $this->getMock('Zend\Authentication\Storage\StorageInterface')
-        );
+        // It only makes sense to set the request if it is HTTP request
+        $request = $serviceLocator->get('Application')->getRequest();
 
-        $serviceManager->setService(
-            'ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter',
-            $this->getMock('Zend\Authentication\Adapter\AdapterInterface')
-        );
+        if ($request instanceof HttpRequest) {
+            $accessTokenStorage->setRequest($request);
+        }
 
-        $factory = new AuthenticationServiceFactory();
-        $service = $factory->createService($serviceManager);
-
-        $this->assertInstanceOf('Zend\Authentication\AuthenticationService', $service);
+        return $accessTokenStorage;
     }
 }
