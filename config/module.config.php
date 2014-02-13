@@ -95,7 +95,7 @@ return [
                 'delete-expired-tokens' => [
                     'type'    => 'Simple',
                     'options' => [
-                        'route'    => 'oauth2 delete expired tokens',
+                        'route'    => 'oauth2 server delete expired tokens',
                         'defaults' => [
                             'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
                             'action'     => 'delete-expired-tokens'

@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module;
+namespace ZfrOAuth2Module\Server;
 
 use Zend\Console\Adapter\AdapterInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -40,7 +40,7 @@ class Module implements
      */
     public function getConfig()
     {
-        return include __DIR__ . '/../../config/module.config.php';
+        return include __DIR__ . '/../../../config/module.config.php';
     }
 
     /**
@@ -56,7 +56,7 @@ class Module implements
      */
     public function getConsoleBanner(AdapterInterface $console)
     {
-        return 'ZfrOAuth2Server';
+        return 'ZfrOAuth2Module\Server';
     }
 
     /**
@@ -65,7 +65,7 @@ class Module implements
     public function getConsoleUsage(AdapterInterface $console)
     {
         return [
-            'oauth2 delete expired tokens' => 'Delete expired access tokens'
+            'oauth2 server delete expired tokens' => 'Delete expired access tokens'
         ];
     }
 }
