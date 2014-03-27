@@ -19,6 +19,8 @@
 namespace ZfrOAuth2Module\Server;
 
 use Zend\Console\Adapter\AdapterInterface;
+use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
@@ -30,11 +32,24 @@ use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
  * @license MIT
  */
 class Module implements
+    BootstrapListenerInterface,
     ConfigProviderInterface,
     ConsoleBannerProviderInterface,
     ConsoleUsageProviderInterface,
     DependencyIndicatorInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function onBootstrap(EventInterface $event)
+    {
+        /* @var \Zend\Mvc\Application $application */
+        $application  = $event->getTarget();
+        $eventManager = $application->getEventManager();
+
+        $eventManager->attach(new AuthorizationVaryListener());
+    }
+
     /**
      * {@inheritDoc}
      */
