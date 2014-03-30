@@ -25,6 +25,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
+use ZfrOAuth2Module\Server\Mvc\AuthorizationVaryListener;
 
 /**
  * Module
