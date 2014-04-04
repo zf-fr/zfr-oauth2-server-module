@@ -52,7 +52,7 @@ class TokenController extends AbstractActionController
     {
         // Can't do anything if not HTTP request...
         if (!$this->request instanceof HttpRequest) {
-            return;
+            return null;
         }
 
         return $this->authorizationServer->handleTokenRequest($this->request);
@@ -74,6 +74,14 @@ class TokenController extends AbstractActionController
         $accessTokenService = $this->serviceLocator->get('ZfrOAuth2\Server\Service\AccessTokenService');
         $accessTokenService->deleteExpiredTokens();
 
-        return "\nExpired access tokens were properly deleted!\n\n";
+        /* @var \ZfrOAuth2\Server\Service\TokenService $refreshTokenService */
+        $refreshTokenService = $this->serviceLocator->get('ZfrOAuth2\Server\Service\RefreshTokenService');
+        $refreshTokenService->deleteExpiredTokens();
+
+        /* @var \ZfrOAuth2\Server\Service\TokenService $authorizationCodeService */
+        $authorizationCodeService = $this->serviceLocator->get('ZfrOAuth2\Server\Service\AuthorizationCodeService');
+        $authorizationCodeService->deleteExpiredTokens();
+
+        return "\nExpired tokens were properly deleted!\n\n";
     }
 }
