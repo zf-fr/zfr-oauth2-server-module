@@ -82,6 +82,10 @@ class AccessTokenStorage extends NonPersistent
     {
         $request = $this->application->getMvcEvent()->getRequest();
 
-        return $request instanceof Request ? $request : null;
+        if (! $request instanceof Request || ! $this->resourceServer->isRequestValid($request)) {
+            return null;
+        }
+
+        return $request;
     }
 }
