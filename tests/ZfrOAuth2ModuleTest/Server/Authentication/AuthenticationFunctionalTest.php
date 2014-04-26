@@ -23,6 +23,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Result;
 use Zend\Http\Request as HttpRequest;
 use ZfrOAuth2\Server\Entity\AccessToken;
+use ZfrOAuth2\Server\Exception\OAuth2Exception;
 use ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
@@ -104,7 +105,24 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnExpiredToken()
     {
-        $this->markTestIncomplete();
+        $request = new HttpRequest();
+
+        $this->authenticationStorage->setRequest($request); // @todo this needs to go - this is wrong DI.
+
+        $token = new AccessToken();
+        $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+        $token->setOwner($owner);
+
+        $this
+            ->resourceServer
+            ->expects($this->atLeastOnce())
+            ->method('getAccessToken')
+            ->with($request)
+            ->will($this->throwException(new OAuth2Exception('Expired token', 123)));
+
+        $this->setExpectedException('ZfrOAuth2\Server\Exception\OAuth2Exception', 'Expired token', 123);
+
+        $this->authenticationService->getIdentity();
     }
 
     public function testFailAuthenticationOnNoRequest()
