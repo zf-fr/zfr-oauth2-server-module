@@ -95,7 +95,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
             ->resourceServer
             ->expects($this->atLeastOnce())
             ->method('getAccessToken')
-            //->with($request)
+            ->with($request)
             ->will($this->returnValue(null));
 
         $this->assertFalse($this->authenticationService->hasIdentity());
@@ -103,6 +103,11 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     }
 
     public function testFailAuthenticationOnExpiredToken()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testFailAuthenticationOnNoRequest()
     {
         $this->markTestIncomplete();
     }
