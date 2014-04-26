@@ -18,8 +18,8 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Authentication\Storage;
 
-use Zend\Authentication\Result;
 use Zend\Http\Request as HttpRequest;
+use Zend\Mvc\MvcEvent;
 use ZfrOAuth2\Server\Entity\AccessToken;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
@@ -31,39 +31,70 @@ use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
  */
 class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \ZfrOAuth2\Server\ResourceServer|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $resourceServer;
+
+    /**
+     * @var HttpRequest
+     */
+    private $request;
+
+    /**
+     * @var AccessTokenStorage
+     */
+    private $storage;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function setUp()
+    {
+        $application          = $this->getMock('Zend\Mvc\Application', [], [], '', false);
+        $mvcEvent             = new MvcEvent();
+        $this->resourceServer = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
+        $this->request        = new HttpRequest();
+        $this->storage        = new AccessTokenStorage($this->resourceServer, $application);
+
+        $application->expects($this->any())->method('getMvcEvent')->will($this->returnValue($mvcEvent));
+        $mvcEvent->setRequest($this->request);
+    }
+
     public function testIsConsideredAsEmptyIfNoAccessToken()
     {
-        $resourceServer = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
-        $request        = new HttpRequest();
+        $this->resourceServer
+            ->expects($this->atLeastOnce())
+            ->method('isRequestValid')
+            ->with($this->request)
+            ->will($this->returnValue(false));
 
-        $storage = new AccessTokenStorage($resourceServer);
-        $storage->setRequest($request);
+        $this->resourceServer->expects($this->never())->method('getAccessToken');
 
-        $resourceServer->expects($this->once())
-                       ->method('getAccessToken')
-                       ->with($request)
-                       ->will($this->returnValue(null));
-
-        $this->isTrue($storage->isEmpty());
+        $this->assertTrue($this->storage->isEmpty());
+        $this->assertNull($this->storage->read());
     }
 
     public function testReadOwnerFromAccessToken()
     {
-        $resourceServer = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
-        $request        = new HttpRequest();
-
-        $storage = new AccessTokenStorage($resourceServer);
-        $storage->setRequest($request);
-
         $token = new AccessToken();
         $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+
         $token->setOwner($owner);
 
-        $resourceServer->expects($this->once())
-                       ->method('getAccessToken')
-                       ->with($request)
-                       ->will($this->returnValue($token));
+        $this->resourceServer
+            ->expects($this->atLeastOnce())
+            ->method('isRequestValid')
+            ->with($this->request)
+            ->will($this->returnValue(true));
 
-        $this->assertSame($owner, $storage->read());
+        $this->resourceServer
+            ->expects($this->atLeastOnce())
+            ->method('getAccessToken')
+            ->with($this->request)
+            ->will($this->returnValue($token));
+
+        $this->assertFalse($this->storage->isEmpty());
+        $this->assertSame($owner, $this->storage->read());
     }
 }

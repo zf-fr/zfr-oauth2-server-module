@@ -19,7 +19,8 @@
 namespace ZfrOAuth2Module\Server\Authentication\Storage;
 
 use Zend\Authentication\Storage\NonPersistent;
-use Zend\Http\Request as HttpRequest;
+use Zend\Http\Request;
+use Zend\Mvc\Application;
 use ZfrOAuth2\Server\ResourceServer;
 
 /**
@@ -34,27 +35,18 @@ class AccessTokenStorage extends NonPersistent
     protected $resourceServer;
 
     /**
-     * @var HttpRequest
+     * @var Application
      */
-    protected $request;
+    private $application;
 
     /**
      * @param ResourceServer $resourceServer
+     * @param Application    $application
      */
-    public function __construct(ResourceServer $resourceServer)
+    public function __construct(ResourceServer $resourceServer, Application $application)
     {
         $this->resourceServer = $resourceServer;
-    }
-
-    /**
-     * Set the HTTP request
-     *
-     * @param  HttpRequest $request
-     * @return void
-     */
-    public function setRequest(HttpRequest $request)
-    {
-        $this->request = $request;
+        $this->application    = $application;
     }
 
     /**
@@ -62,7 +54,9 @@ class AccessTokenStorage extends NonPersistent
      */
     public function isEmpty()
     {
-        return $this->resourceServer->getAccessToken($this->request) === null;
+        $request = $this->getCurrentRequest();
+
+        return $request ? $this->resourceServer->getAccessToken($request) === null : true;
     }
 
     /**
@@ -70,6 +64,28 @@ class AccessTokenStorage extends NonPersistent
      */
     public function read()
     {
-        return $this->resourceServer->getAccessToken($this->request)->getOwner();
+        $request = $this->getCurrentRequest();
+
+        if (! $request) {
+            return null;
+        }
+
+        $accessToken = $this->resourceServer->getAccessToken($request);
+
+        return $accessToken ? $accessToken->getOwner() : null;
+    }
+
+    /**
+     * @return Request|null
+     */
+    private function getCurrentRequest()
+    {
+        $request = $this->application->getMvcEvent()->getRequest();
+
+        if (! $request instanceof Request || ! $this->resourceServer->isRequestValid($request)) {
+            return null;
+        }
+
+        return $request;
     }
 }

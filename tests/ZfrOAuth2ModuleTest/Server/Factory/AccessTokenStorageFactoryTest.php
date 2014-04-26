@@ -18,8 +18,6 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Factory;
 
-use Zend\Http\Request as HttpRequest;
-use Zend\ServiceManager\ServiceManager;
 use ZfrOAuth2Module\Server\Factory\AccessTokenStorageFactory;
 
 /**
@@ -32,20 +30,18 @@ class AccessTokenStorageFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreateFromFactory()
     {
-        $serviceManager = new ServiceManager();
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
 
-        $serviceManager->setService(
-            'ZfrOAuth2\Server\ResourceServer',
-            $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false)
-        );
-
-        $application = $this->getMock('Zend\Mvc\ApplicationInterface');
-        $application->expects($this->once())->method('getRequest')->will($this->returnValue(new HttpRequest()));
-        $serviceManager->setService('Application', $application);
+        $serviceLocator->expects($this->any())->method('get')->will($this->returnValueMap([
+            ['ZfrOAuth2\Server\ResourceServer',  $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false)],
+            ['Application', $this->getMock('Zend\Mvc\Application', [], [], '', false)]
+        ]));
 
         $factory = new AccessTokenStorageFactory();
-        $service = $factory->createService($serviceManager);
 
-        $this->assertInstanceOf('ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage', $service);
+        $this->assertInstanceOf(
+            'ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage',
+            $factory->createService($serviceLocator)
+        );
     }
 }
