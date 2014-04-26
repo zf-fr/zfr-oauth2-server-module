@@ -34,15 +34,11 @@ class AccessTokenStorageFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $accessTokenStorage = new AccessTokenStorage($serviceLocator->get('ZfrOAuth2\Server\ResourceServer'));
+        /* @var $resourceServer \ZfrOAuth2\Server\ResourceServer */
+        $resourceServer = $serviceLocator->get('ZfrOAuth2\Server\ResourceServer');
+        /* @var $application \Zend\Mvc\Application */
+        $application = $serviceLocator->get('Application');
 
-        // It only makes sense to set the request if it is HTTP request
-        $request = $serviceLocator->get('Application')->getRequest();
-
-        if ($request instanceof HttpRequest) {
-            $accessTokenStorage->setRequest($request);
-        }
-
-        return $accessTokenStorage;
+        return new AccessTokenStorage($resourceServer, $application);
     }
 }
