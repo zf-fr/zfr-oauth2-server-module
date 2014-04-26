@@ -111,4 +111,9 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     {
         $this->markTestIncomplete();
     }
+
+    public function testFailAuthenticationOnNonHttpRequest()
+    {
+        $this->markTestIncomplete();
+    }
 }
