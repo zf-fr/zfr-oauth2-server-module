@@ -18,7 +18,6 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Authentication\Storage;
 
-use Zend\Authentication\Result;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use ZfrOAuth2\Server\Entity\AccessToken;
