@@ -135,6 +135,13 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnNonHttpRequest()
     {
-        $this->markTestIncomplete();
+        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+
+        $this->authenticationStorage->setRequest($request); // @todo this needs to go - this is wrong DI.
+
+        $this->resourceServer->expects($this->never())->method('getAccessToken');
+
+        $this->assertFalse($this->authenticationService->hasIdentity());
+        $this->assertNull($this->authenticationService->getIdentity());
     }
 }
