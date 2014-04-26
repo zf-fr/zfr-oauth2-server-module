@@ -19,10 +19,8 @@
 namespace ZfrOAuth2Module\Server\Authentication\Storage;
 
 use Zend\Authentication\Storage\NonPersistent;
-use Zend\Http\Request as HttpRequest;
 use Zend\Http\Request;
 use Zend\Mvc\Application;
-use Zend\Mvc\ApplicationInterface;
 use ZfrOAuth2\Server\ResourceServer;
 
 /**
