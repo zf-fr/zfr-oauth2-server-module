@@ -101,4 +101,9 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->authenticationService->hasIdentity());
         $this->assertNull($this->authenticationService->getIdentity());
     }
+
+    public function testFailAuthenticationOnExpiredToken()
+    {
+        $this->markTestIncomplete();
+    }
 }
