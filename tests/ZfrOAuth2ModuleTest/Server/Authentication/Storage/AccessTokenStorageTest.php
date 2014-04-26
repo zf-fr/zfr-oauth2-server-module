@@ -65,9 +65,11 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
     {
         $this->resourceServer
             ->expects($this->atLeastOnce())
-            ->method('getAccessToken')
+            ->method('isRequestValid')
             ->with($this->request)
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(false));
+
+        $this->resourceServer->expects($this->never())->method('getAccessToken');
 
         $this->assertTrue($this->storage->isEmpty());
         $this->assertNull($this->storage->read());
@@ -79,6 +81,12 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
         $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
 
         $token->setOwner($owner);
+
+        $this->resourceServer
+            ->expects($this->atLeastOnce())
+            ->method('isRequestValid')
+            ->with($this->request)
+            ->will($this->returnValue(true));
 
         $this->resourceServer
             ->expects($this->atLeastOnce())

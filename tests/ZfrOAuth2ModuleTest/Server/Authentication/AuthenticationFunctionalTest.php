@@ -80,6 +80,13 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this
             ->resourceServer
             ->expects($this->atLeastOnce())
+            ->method('isRequestValid')
+            ->with($request)
+            ->will($this->returnValue(true));
+
+        $this
+            ->resourceServer
+            ->expects($this->atLeastOnce())
             ->method('getAccessToken')
             ->with($request)
             ->will($this->returnValue($token));
@@ -102,9 +109,11 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this
             ->resourceServer
             ->expects($this->atLeastOnce())
-            ->method('getAccessToken')
+            ->method('isRequestValid')
             ->with($request)
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(false));
+
+        $this->resourceServer->expects($this->never())->method('getAccessToken');
 
         $this->assertFalse($this->authenticationService->hasIdentity());
         $this->assertNull($this->authenticationService->getIdentity());
@@ -123,6 +132,13 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this
             ->resourceServer
             ->expects($this->atLeastOnce())
+            ->method('isRequestValid')
+            ->with($request)
+            ->will($this->returnValue(true));
+
+        $this
+            ->resourceServer
+            ->expects($this->atLeastOnce())
             ->method('getAccessToken')
             ->with($request)
             ->will($this->throwException(new OAuth2Exception('Expired token', 123)));
@@ -134,6 +150,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnNoRequest()
     {
+        $this->resourceServer->expects($this->never())->method('isRequestValid');
         $this->resourceServer->expects($this->never())->method('getAccessToken');
 
         $this->assertFalse($this->authenticationService->hasIdentity());
@@ -146,6 +163,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
+        $this->resourceServer->expects($this->never())->method('isRequestValid');
         $this->resourceServer->expects($this->never())->method('getAccessToken');
 
         $this->assertFalse($this->authenticationService->hasIdentity());
