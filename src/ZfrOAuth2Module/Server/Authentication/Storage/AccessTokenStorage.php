@@ -52,17 +52,6 @@ class AccessTokenStorage extends NonPersistent
     }
 
     /**
-     * Set the HTTP request
-     *
-     * @param  HttpRequest $request
-     * @return void
-     */
-    public function setRequest(HttpRequest $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function isEmpty()
