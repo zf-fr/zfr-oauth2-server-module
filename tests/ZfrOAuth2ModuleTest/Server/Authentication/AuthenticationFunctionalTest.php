@@ -144,7 +144,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     {
         $request = $this->getMock('Zend\Stdlib\RequestInterface');
 
-        $this->authenticationStorage->setRequest($request); // @todo this needs to go - this is wrong DI.
+        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $this->resourceServer->expects($this->never())->method('getAccessToken');
 
