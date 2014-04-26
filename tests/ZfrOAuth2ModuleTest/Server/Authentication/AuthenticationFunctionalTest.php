@@ -20,12 +20,9 @@ namespace ZfrOAuth2ModuleTest\Server\Authentication\Adapter;
 
 use PHPUnit_Framework_TestCase;
 use Zend\Authentication\AuthenticationService;
-use Zend\Authentication\Result;
 use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\MvcEvent;
 use ZfrOAuth2\Server\Entity\AccessToken;
 use ZfrOAuth2\Server\Exception\OAuth2Exception;
-use ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
 /**
