@@ -22,6 +22,7 @@ use PHPUnit_Framework_TestCase;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Result;
 use Zend\Http\Request as HttpRequest;
+use Zend\Mvc\MvcEvent;
 use ZfrOAuth2\Server\Entity\AccessToken;
 use ZfrOAuth2\Server\Exception\OAuth2Exception;
 use ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter;
@@ -51,20 +52,29 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     private $authenticationService;
 
     /**
+     * @var \Zend\Mvc\MvcEvent|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $mvcEvent;
+
+    /**
      * {@inheritDoc}
      */
     protected function setUp()
     {
+        $this->mvcEvent              = $this->getMock('Zend\Mvc\MvcEvent');
+        $application                 = $this->getMock('Zend\Mvc\Application', [], [], '', false);
         $this->resourceServer        = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
-        $this->authenticationStorage = new AccessTokenStorage($this->resourceServer);
+        $this->authenticationStorage = new AccessTokenStorage($this->resourceServer, $application);
         $this->authenticationService = new AuthenticationService($this->authenticationStorage);
+
+        $application->expects($this->any())->method('getMvcEvent')->will($this->returnValue($this->mvcEvent));
     }
 
     public function testSuccessAuthenticationOnValidToken()
     {
         $request = new HttpRequest();
 
-        $this->authenticationStorage->setRequest($request); // @todo this needs to go - this is wrong DI.
+        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $token = new AccessToken();
         $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
@@ -86,7 +96,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     {
         $request = new HttpRequest();
 
-        $this->authenticationStorage->setRequest($request); // @todo this needs to go - this is wrong DI.
+        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $token = new AccessToken();
         $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
@@ -107,7 +117,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     {
         $request = new HttpRequest();
 
-        $this->authenticationStorage->setRequest($request); // @todo this needs to go - this is wrong DI.
+        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $token = new AccessToken();
         $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
