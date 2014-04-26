@@ -38,11 +38,6 @@ class AuthenticationServiceFactoryTest extends \PHPUnit_Framework_TestCase
             $this->getMock('Zend\Authentication\Storage\StorageInterface')
         );
 
-        $serviceManager->setService(
-            'ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter',
-            $this->getMock('Zend\Authentication\Adapter\AdapterInterface')
-        );
-
         $factory = new AuthenticationServiceFactory();
         $service = $factory->createService($serviceManager);
 
