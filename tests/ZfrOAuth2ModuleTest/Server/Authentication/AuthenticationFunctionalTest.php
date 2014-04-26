@@ -127,7 +127,10 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnNoRequest()
     {
-        $this->markTestIncomplete();
+        $this->resourceServer->expects($this->never())->method('getAccessToken');
+
+        $this->assertFalse($this->authenticationService->hasIdentity());
+        $this->assertNull($this->authenticationService->getIdentity());
     }
 
     public function testFailAuthenticationOnNonHttpRequest()
