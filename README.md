@@ -47,7 +47,7 @@ return [
     'doctrine' => [
         'entity_resolver' => [
             'orm_default' => [
-                'ZfrOAuth2/Server/Entity/TokenOwnerInterface' => 'Application/Entity/User'
+                'ZfrOAuth2\Server\Entity\TokenOwnerInterface' => 'Application\Entity\User'
             ]
         ]
     ]
