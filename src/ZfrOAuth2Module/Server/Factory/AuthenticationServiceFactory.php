@@ -33,10 +33,10 @@ class AuthenticationServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        /* @var \ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage $accessTokenStorage */
+        $accessTokenStorage = $serviceLocator->get('ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage');
+
         // When using an API based on a REST API, the authentication is stateless
-        return new AuthenticationService(
-            $serviceLocator->get('ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage'),
-            $serviceLocator->get('ZfrOAuth2Module\Server\Authentication\Adapter\AccessTokenAdapter')
-        );
+        return new AuthenticationService($accessTokenStorage);
     }
 }

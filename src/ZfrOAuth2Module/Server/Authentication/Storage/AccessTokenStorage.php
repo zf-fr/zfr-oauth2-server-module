@@ -19,7 +19,7 @@
 namespace ZfrOAuth2Module\Server\Authentication\Storage;
 
 use Zend\Authentication\Storage\NonPersistent;
-use Zend\Http\Request;
+use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Application;
 use ZfrOAuth2\Server\ResourceServer;
 
@@ -66,7 +66,7 @@ class AccessTokenStorage extends NonPersistent
     {
         $request = $this->getCurrentRequest();
 
-        if (! $request) {
+        if (!$request) {
             return null;
         }
 
@@ -76,13 +76,13 @@ class AccessTokenStorage extends NonPersistent
     }
 
     /**
-     * @return Request|null
+     * @return HttpRequest|null
      */
     private function getCurrentRequest()
     {
         $request = $this->application->getMvcEvent()->getRequest();
 
-        if (! $request instanceof Request || ! $this->resourceServer->isRequestValid($request)) {
+        if (!$request instanceof HttpRequest) {
             return null;
         }
 
