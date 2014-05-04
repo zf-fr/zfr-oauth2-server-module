@@ -38,7 +38,7 @@ return [
         'entity_resolver' => [
             'orm_default' => [
                 'resolvers' => [
-                    'ZfrOAuth2/Server/Entity/TokenOwnerInterface' => 'Application/Entity/User'
+                    'ZfrOAuth2\Server\Entity\TokenOwnerInterface' => 'Application\Entity\User'
                 ]
             ]
         ]
