@@ -20,7 +20,9 @@ namespace ZfrOAuth2ModuleTest\Server\Controller;
 
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
+use ZfrOAuth2\Server\Entity\AccessToken;
 use ZfrOAuth2Module\Server\Controller\TokenController;
+use ZfrOAuth2Module\Server\Event\TokenEvent;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -64,5 +66,82 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
                             ->will($this->returnValue($response));
 
         $this->assertSame($response, $controller->tokenAction($request));
+    }
+
+    public function testTriggerEventIfTokenIsCreated()
+    {
+        $authorizationServer = $this->getMock('ZfrOAuth2\Server\AuthorizationServer', [], [], '', false);
+        $controller          = new TokenController($authorizationServer);
+
+        $request  = new HttpRequest();
+        $response = new HttpResponse();
+
+        $reflProperty = new \ReflectionProperty($controller, 'request');
+        $reflProperty->setAccessible(true);
+        $reflProperty->setValue($controller, $request);
+
+        $authorizationServer->expects($this->once())
+                            ->method('handleTokenRequest')
+                            ->with($request)
+                            ->will($this->returnValue($response));
+
+        $accessToken = new AccessToken();
+
+        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $controller->setEventManager($eventManager);
+
+        $response->setStatusCode(200);
+        $response->setMetadata('accessToken', $accessToken);
+
+        $eventManager->expects($this->once())
+                     ->method('trigger')
+                     ->with(TokenEvent::EVENT_TOKEN_CREATED, $this->callback(
+                    function(TokenEvent $event) use ($request, $response, $accessToken) {
+                        $this->assertSame($request, $event->getRequest());
+                        $this->assertSame($response, $event->getResponse());
+                        $this->assertSame($accessToken, $event->getAccessToken());
+
+                        return true;
+                    }));
+
+        $controller->tokenAction($request);
+    }
+
+    public function testTriggerEventIfTokenIsNotCreated()
+    {
+        $authorizationServer = $this->getMock('ZfrOAuth2\Server\AuthorizationServer', [], [], '', false);
+        $controller          = new TokenController($authorizationServer);
+
+        $request  = new HttpRequest();
+        $response = new HttpResponse();
+
+        $reflProperty = new \ReflectionProperty($controller, 'request');
+        $reflProperty->setAccessible(true);
+        $reflProperty->setValue($controller, $request);
+
+        $authorizationServer->expects($this->once())
+            ->method('handleTokenRequest')
+            ->with($request)
+            ->will($this->returnValue($response));
+
+        $accessToken = new AccessToken();
+
+        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $controller->setEventManager($eventManager);
+
+        $response->setStatusCode(400);
+
+        $eventManager->expects($this->once())
+                     ->method('trigger')
+                     ->with(TokenEvent::EVENT_TOKEN_FAILED, $this->callback(
+                function(TokenEvent $event) use ($request, $response) {
+                    $this->assertSame($request, $event->getRequest());
+                    $this->assertSame($response, $event->getResponse());
+                    $this->assertNull($event->getAccessToken());
+
+                    return true;
+                }));
+
+        $controller->tokenAction($request);
     }
 }

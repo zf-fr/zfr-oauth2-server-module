@@ -89,6 +89,68 @@ return [
 
 You can also pass a service key, that will be pulled from the service manager, if you need to inject dependencies.
 
+### Using the event manager
+
+There are a lot of use cases where you would like to execute specific code when a token is created (or when it
+could not be created). Such use cases include: log login, modify generic OAuth2 response to include additional fields...
+
+To that extent, ZfrOAuth2 module trigger events in the `TokenController`. Two events are triggered:
+
+* `ZfrOAuth2Module\Server\Event\TokenEvent::EVENT_TOKEN_CREATED`: event that is triggered when the access token has
+been properly created and persisted.
+* `ZfrOAuth2Module\Server\Event\TokenEvent::EVENT_TOKEN_FAILED`: event that is triggered when an error has occurred (
+wrong credentials, missing grant...).
+
+In both cases, the `TokenEvent` event lets you access to the request, the response body and the access token (if available).
+
+Here is an example:
+
+```php
+use ZfrOAuth2Module\Server\Event\TokenEvent;
+
+class Module
+{
+    public function onBootstrap(EventInterface $event)
+    {
+        /* @var \Zend\Mvc\Application $application */
+        $application   = $event->getTarget();
+        $eventManager  = $application->getEventManager();
+        $sharedManager = $eventManager->getSharedManager();
+
+        $sharedManager->attach(
+            'ZfrOAuth2Module\Server\Controller\TokenController',
+            TokenEvent::EVENT_TOKEN_CREATED,
+            [$this, 'tokenCreated']
+        );
+
+        $sharedManager->attach(
+            'ZfrOAuth2Module\Server\Controller\TokenController',
+            TokenEvent::EVENT_TOKEN_FAILED,
+            [$this, 'tokenFailed']
+        );
+    }
+
+    public function tokenCreated(TokenEvent $event)
+    {
+        // We can log the access token
+        $accessToken = $event->getAccessToken();
+        // ...
+
+        // Or we can alter the response body, if we need to
+        $body                 = $event->getResponseBody();
+        $body['custom_field'] = 'bar';
+
+        // Response will be automatically changed by the controller
+    }
+
+    public function tokenFailed(TokenEvent $event)
+    {
+        // We can inspect the response to know what happen and log the failure
+        $body = $event->getResponseBody();
+    }
+}
+```
+
 ### Delete expired tokens
 
 ZfrOAuth2Module\Server offers a console route you can use to delete expired access tokens. You can use this as a CRON
