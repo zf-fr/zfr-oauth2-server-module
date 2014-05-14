@@ -101,7 +101,7 @@ been properly created and persisted.
 * `ZfrOAuth2Module\Server\Event\TokenEvent::EVENT_TOKEN_FAILED`: event that is triggered when an error has occurred (
 wrong credentials, missing grant...).
 
-In both cases, the `TokenEvent` event lets you access to the request, the response and the access token (if available).
+In both cases, the `TokenEvent` event lets you access to the request, the response body and the access token (if available).
 
 Here is an example:
 
@@ -137,17 +137,18 @@ class Module
         // ...
 
         // Or we can alter the response body, if we need to
-        $response             = $event->getResponse();
-        $body                 = json_decode($response->getContent(), true);
+        $body                 = $event->getResponseBody();
         $body['custom_field'] = 'bar';
 
-        $response->setContent(json_encode($body));
+        $event->setResponseBody($body);
+
+        // Response will be automatically changed by the controller
     }
 
     public function tokenFailed(TokenEvent $event)
     {
         // We can inspect the response to know what happen and log the failure
-        $response = $event->getResponse();
+        $body = $event->getResponseBody();
     }
 }
 ```

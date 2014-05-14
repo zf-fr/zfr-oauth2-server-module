@@ -40,7 +40,7 @@ class TokenEvent extends Event
     /**
      * @var HttpResponse
      */
-    protected $response;
+    protected $responseBody;
 
     /**
      * @var AccessToken|null
@@ -49,14 +49,14 @@ class TokenEvent extends Event
 
     /**
      * @param HttpRequest      $request
-     * @param HttpResponse     $response
+     * @param array            $responseBody
      * @param AccessToken|null $accessToken
      */
-    public function __construct(HttpRequest $request, HttpResponse $response, AccessToken $accessToken = null)
+    public function __construct(HttpRequest $request, array $responseBody, AccessToken $accessToken = null)
     {
-        $this->request     = $request;
-        $this->response    = $response;
-        $this->accessToken = $accessToken;
+        $this->request      = $request;
+        $this->responseBody = $responseBody;
+        $this->accessToken  = $accessToken;
     }
 
     /**
@@ -68,11 +68,20 @@ class TokenEvent extends Event
     }
 
     /**
-     * @return HttpResponse
+     * @return array
      */
-    public function getResponse()
+    public function getResponseBody()
     {
-        return $this->response;
+        return $this->responseBody;
+    }
+
+    /**
+     * @param  array $responseBody
+     * @return void
+     */
+    public function setResponseBody(array $responseBody)
+    {
+        $this->responseBody = $responseBody;
     }
 
     /**

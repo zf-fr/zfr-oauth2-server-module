@@ -51,19 +51,27 @@ class TokenController extends AbstractActionController
      */
     public function tokenAction()
     {
+        $request = $this->getRequest();
+
         // Can't do anything if not HTTP request...
-        if (!$this->request instanceof HttpRequest) {
+        if (!$request instanceof HttpRequest) {
             return null;
         }
 
-        $response = $this->authorizationServer->handleTokenRequest($this->request);
-        $event    = new TokenEvent($this->getRequest(), $response, $response->getMetadata('accessToken', null));
+        $response = $this->authorizationServer->handleTokenRequest($request);
 
-        if ($response->getStatusCode() === 200) {
+        // We extract the body so that it is easier to modify in the event
+        $responseBody = json_decode($response->getContent(), true);
+        $event        = new TokenEvent($request, $responseBody, $response->getMetadata('accessToken', null));
+
+        if ($response->isSuccess()) {
             $this->getEventManager()->trigger(TokenEvent::EVENT_TOKEN_CREATED, $event);
         } else {
             $this->getEventManager()->trigger(TokenEvent::EVENT_TOKEN_FAILED, $event);
         }
+
+        // We re-encode the response into the body
+        $response->setContent(json_encode($event->getResponseBody()));
 
         return $response;
     }
