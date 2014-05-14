@@ -22,6 +22,7 @@ use Zend\Console\Request as ConsoleRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZfrOAuth2\Server\AuthorizationServer;
+use ZfrOAuth2Module\Server\Event\TokenEvent;
 use ZfrOAuth2Module\Server\Exception\RuntimeException;
 
 /**
@@ -55,7 +56,16 @@ class TokenController extends AbstractActionController
             return null;
         }
 
-        return $this->authorizationServer->handleTokenRequest($this->request);
+        $response = $this->authorizationServer->handleTokenRequest($this->request);
+        $event    = new TokenEvent($this->getRequest(), $response, $response->getMetadata('accessToken', null));
+
+        if ($response->getStatusCode() === 200) {
+            $this->getEventManager()->trigger(TokenEvent::EVENT_TOKEN_CREATED, $event);
+        } else {
+            $this->getEventManager()->trigger(TokenEvent::EVENT_TOKEN_FAILED, $event);
+        }
+
+        return $response;
     }
 
     /**
