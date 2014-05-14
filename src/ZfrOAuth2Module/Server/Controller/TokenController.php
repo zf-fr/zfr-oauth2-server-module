@@ -71,7 +71,7 @@ class TokenController extends AbstractActionController
         }
 
         // We re-encode the response into the body
-        $response->setContent(json_encode($event->getResponseBody()));
+        $response->setContent(json_encode($event->getResponseBody()->getArrayCopy()));
 
         return $response;
     }

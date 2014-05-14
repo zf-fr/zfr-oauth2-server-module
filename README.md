@@ -140,8 +140,6 @@ class Module
         $body                 = $event->getResponseBody();
         $body['custom_field'] = 'bar';
 
-        $event->setResponseBody($body);
-
         // Response will be automatically changed by the controller
     }
 

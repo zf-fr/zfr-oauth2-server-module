@@ -18,6 +18,7 @@
 
 namespace ZfrOAuth2Module\Server\Event;
 
+use ArrayObject;
 use Zend\EventManager\Event;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
@@ -38,7 +39,7 @@ class TokenEvent extends Event
     protected $request;
 
     /**
-     * @var HttpResponse
+     * @var ArrayObject
      */
     protected $responseBody;
 
@@ -55,7 +56,7 @@ class TokenEvent extends Event
     public function __construct(HttpRequest $request, array $responseBody, AccessToken $accessToken = null)
     {
         $this->request      = $request;
-        $this->responseBody = $responseBody;
+        $this->responseBody = new ArrayObject($responseBody);
         $this->accessToken  = $accessToken;
     }
 
@@ -68,20 +69,11 @@ class TokenEvent extends Event
     }
 
     /**
-     * @return array
+     * @return ArrayObject
      */
     public function getResponseBody()
     {
         return $this->responseBody;
-    }
-
-    /**
-     * @param  array $responseBody
-     * @return void
-     */
-    public function setResponseBody(array $responseBody)
-    {
-        $this->responseBody = $responseBody;
     }
 
     /**
