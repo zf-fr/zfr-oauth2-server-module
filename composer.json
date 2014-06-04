@@ -24,7 +24,7 @@
     "zendframework/zend-console": "~2.2",
     "zendframework/zend-stdlib": "~2.2",
     "doctrine/doctrine-module": "~0.8",
-    "zfr/zfr-oauth2-server": "0.3.*"
+    "zfr/zfr-oauth2-server": "0.4.*"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",

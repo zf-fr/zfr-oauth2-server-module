@@ -23,7 +23,7 @@ Please note that until I reach 1.0, I **WILL NOT** follow semantic version. This
 Installation is only officially supported using Composer:
 
 ```sh
-php composer.phar require zfr/zfr-oauth2-server-module:0.2.*
+php composer.phar require zfr/zfr-oauth2-server-module:0.4.*
 ```
 
 Copy-paste the `zfr_oauth2_server.global.php.dist` file to your `autoload` folder, and enable the module by adding
