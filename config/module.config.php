@@ -82,6 +82,17 @@ return [
                                 'action'     => 'token'
                             ]
                         ]
+                    ],
+
+                    'revoke' => [
+                        'type'    => 'Literal',
+                        'options' => [
+                            'route'    => '/revoke',
+                            'defaults' => [
+                                'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
+                                'action'     => 'revoke'
+                            ]
+                        ]
                     ]
                 ]
             ]

@@ -47,6 +47,12 @@ class AuthorizationServerFactory implements FactoryInterface
             $grants[] = $grantPluginManager->get($grant);
         }
 
-        return new AuthorizationServer($clientService, $grants);
+        /** @var \ZfrOAuth2\Server\Service\TokenService $accessTokenService */
+        $accessTokenService = $serviceLocator->get('ZfrOAuth2\Server\Service\AccessTokenService');
+
+        /** @var \ZfrOAuth2\Server\Service\TokenService $refreshTokenService */
+        $refreshTokenService = $serviceLocator->get('ZfrOAuth2\Server\Service\RefreshTokenService');
+
+        return new AuthorizationServer($clientService, $grants, $accessTokenService, $refreshTokenService);
     }
 }
