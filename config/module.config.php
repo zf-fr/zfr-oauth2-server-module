@@ -107,7 +107,7 @@ return [
 
     'controllers' => [
         'factories' => [
-            'ZfrOAuth2Module\Server\Controller\AuthorizationController' => 'ZfrOAuth2Module\Server\Factory\AuthorizeControllerFactory',
+            'ZfrOAuth2Module\Server\Controller\AuthorizationController' => 'ZfrOAuth2Module\Server\Factory\AuthorizationControllerFactory',
             'ZfrOAuth2Module\Server\Controller\TokenController'         => 'ZfrOAuth2Module\Server\Factory\TokenControllerFactory'
         ]
     ],
