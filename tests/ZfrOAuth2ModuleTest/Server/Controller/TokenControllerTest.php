@@ -65,4 +65,24 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($response, $controller->tokenAction($request));
     }
+
+    public function testCanRevokeToken()
+    {
+        $authorizationServer = $this->getMock('ZfrOAuth2\Server\AuthorizationServer', [], [], '', false);
+        $controller          = new TokenController($authorizationServer);
+
+        $request  = new HttpRequest();
+        $response = new HttpResponse();
+
+        $reflProperty = new \ReflectionProperty($controller, 'request');
+        $reflProperty->setAccessible(true);
+        $reflProperty->setValue($controller, $request);
+
+        $authorizationServer->expects($this->once())
+                            ->method('handleRevocationRequest')
+                            ->with($request)
+                            ->will($this->returnValue($response));
+
+        $this->assertSame($response, $controller->revokeAction($request));
+    }
 }

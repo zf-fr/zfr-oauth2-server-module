@@ -59,6 +59,21 @@ class TokenController extends AbstractActionController
     }
 
     /**
+     * Handle a token revocation request
+     *
+     * @return \Zend\Http\Response|null
+     */
+    public function revokeAction()
+    {
+        // Can't do anything if not HTTP request...
+        if (!$this->request instanceof HttpRequest) {
+            return null;
+        }
+
+        return $this->authorizationServer->handleRevocationRequest($this->request);
+    }
+
+    /**
      * Delete expired tokens
      *
      * @return string

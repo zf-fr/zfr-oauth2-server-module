@@ -52,6 +52,16 @@ class AuthorizationServerFactoryTest extends \PHPUnit_Framework_TestCase
             $grantPluginManager
         );
 
+        $serviceManager->setService(
+            'ZfrOAuth2\Server\Service\AccessTokenService',
+            $this->getMock('ZfrOAuth2\Server\Service\TokenService', [], [], '', false)
+        );
+
+        $serviceManager->setService(
+            'ZfrOAuth2\Server\Service\RefreshTokenService',
+            $this->getMock('ZfrOAuth2\Server\Service\TokenService', [], [], '', false)
+        );
+
         $grantPluginManager->expects($this->once())
                            ->method('get')
                            ->with('MyGrant')
