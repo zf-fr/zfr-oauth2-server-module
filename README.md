@@ -65,7 +65,7 @@ return [
     'zfr_oauth2_server' => [
         'grants' => [
             'ZfrOAuth2\Server\Grant\PasswordGrant',
-            'ZfrOauth2\Server\Grant\RefreshTokenGrant'
+            'ZfrOAuth2\Server\Grant\RefreshTokenGrant'
         ]
     ]
 ]
