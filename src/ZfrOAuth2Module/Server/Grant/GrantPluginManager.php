@@ -34,8 +34,7 @@ class GrantPluginManager extends AbstractPluginManager
      */
     protected $factories = [
         'ZfrOAuth2\Server\Grant\AuthorizationGrant'     => 'ZfrOAuth2Module\Server\Factory\AuthorizationGrantFactory',
-        'ZfrOAuth2\Server\Grant\ClientCredentialsGrant'
-            => 'ZfrOAuth2Module\Server\Factory\ClientCredentialsGrantFactory',
+        'ZfrOAuth2\Server\Grant\ClientCredentialsGrant' => 'ZfrOAuth2Module\Server\Factory\ClientCredentialsGrantFactory',
         'ZfrOAuth2\Server\Grant\PasswordGrant'          => 'ZfrOAuth2Module\Server\Factory\PasswordGrantFactory',
         'ZfrOAuth2\Server\Grant\RefreshTokenGrant'      => 'ZfrOAuth2Module\Server\Factory\RefreshTokenGrantFactory',
     ];
