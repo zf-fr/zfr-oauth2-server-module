@@ -18,7 +18,6 @@
 
 namespace ZfrOAuth2Module\Server\Factory;
 
-use Zend\Http\Request as HttpRequest;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
