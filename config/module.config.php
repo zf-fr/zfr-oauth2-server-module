@@ -51,6 +51,24 @@ return [
                 ],
             ],
         ],
+
+        'configuration' => [
+            'orm_default' => [
+                'second_level_cache' => [
+                    'enabled' => true,
+
+                    'regions' => [
+                        'oauth_token_region' => [
+                            'lifetime' => 3600
+                        ],
+
+                        'oauth_scope_region' => [
+                            'lifetime' => 300
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ],
 
     'router' => [
