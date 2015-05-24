@@ -20,6 +20,8 @@ namespace ZfrOAuth2ModuleTest\Server\Controller;
 
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
+use Zend\Stdlib\RequestInterface;
+use ZfrOAuth2\Server\AuthorizationServer;
 use ZfrOAuth2Module\Server\Controller\TokenController;
 
 /**
@@ -32,10 +34,10 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testDoNothingIfNotHttpRequest()
     {
-        $authorizationServer = $this->getMock('ZfrOAuth2\Server\AuthorizationServer', [], [], '', false);
+        $authorizationServer = $this->getMock(AuthorizationServer::class, [], [], '', false);
         $controller          = new TokenController($authorizationServer);
 
-        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+        $request = $this->getMock(RequestInterface::class);
 
         $reflProperty = new \ReflectionProperty($controller, 'request');
         $reflProperty->setAccessible(true);
@@ -48,7 +50,7 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testDelegateToAuthorizationServerIfHttpRequest()
     {
-        $authorizationServer = $this->getMock('ZfrOAuth2\Server\AuthorizationServer', [], [], '', false);
+        $authorizationServer = $this->getMock(AuthorizationServer::class, [], [], '', false);
         $controller          = new TokenController($authorizationServer);
 
         $request  = new HttpRequest();
@@ -68,7 +70,7 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testCanRevokeToken()
     {
-        $authorizationServer = $this->getMock('ZfrOAuth2\Server\AuthorizationServer', [], [], '', false);
+        $authorizationServer = $this->getMock(AuthorizationServer::class, [], [], '', false);
         $controller          = new TokenController($authorizationServer);
 
         $request  = new HttpRequest();

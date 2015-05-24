@@ -18,6 +18,7 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Options;
 
+use ZfrOAuth2\Server\Grant\ClientCredentialsGrant;
 use ZfrOAuth2Module\Server\Options\ModuleOptions;
 
 /**
@@ -38,7 +39,7 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
             'access_token_ttl'       => 3000,
             'refresh_token_ttl'      => 30000,
             'owner_callable'         => $callable,
-            'grants'                 => ['ZfrOAuth2\Server\Grant\ClientCredentialsGrant']
+            'grants'                 => [ClientCredentialsGrant::class]
         ]);
 
         $this->assertEquals('my_object_manager', $options->getObjectManager());
@@ -46,6 +47,6 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3000, $options->getAccessTokenTtl());
         $this->assertEquals(30000, $options->getRefreshTokenTtl());
         $this->assertSame($callable, $options->getOwnerCallable());
-        $this->assertEquals(['ZfrOAuth2\Server\Grant\ClientCredentialsGrant'], $options->getGrants());
+        $this->assertEquals([ClientCredentialsGrant::class], $options->getGrants());
     }
 }

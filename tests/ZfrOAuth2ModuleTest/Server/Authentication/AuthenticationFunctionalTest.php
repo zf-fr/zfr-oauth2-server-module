@@ -21,8 +21,13 @@ namespace ZfrOAuth2ModuleTest\Server\Authentication\Adapter;
 use PHPUnit_Framework_TestCase;
 use Zend\Authentication\AuthenticationService;
 use Zend\Http\Request as HttpRequest;
+use Zend\Mvc\Application;
+use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\RequestInterface;
 use ZfrOAuth2\Server\Entity\AccessToken;
+use ZfrOAuth2\Server\Entity\TokenOwnerInterface;
 use ZfrOAuth2\Server\Exception\OAuth2Exception;
+use ZfrOAuth2\Server\ResourceServer;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
 /**
@@ -58,9 +63,9 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->mvcEvent              = $this->getMock('Zend\Mvc\MvcEvent');
-        $application                 = $this->getMock('Zend\Mvc\Application', [], [], '', false);
-        $this->resourceServer        = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
+        $this->mvcEvent              = $this->getMock(MvcEvent::class);
+        $application                 = $this->getMock(Application::class, [], [], '', false);
+        $this->resourceServer        = $this->getMock(ResourceServer::class, [], [], '', false);
         $this->authenticationStorage = new AccessTokenStorage($this->resourceServer, $application);
         $this->authenticationService = new AuthenticationService($this->authenticationStorage);
 
@@ -74,7 +79,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $token = new AccessToken();
-        $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+        $owner = $this->getMock(TokenOwnerInterface::class);
         $token->setOwner($owner);
 
         $this
@@ -96,7 +101,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $token = new AccessToken();
-        $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+        $owner = $this->getMock(TokenOwnerInterface::class);
         $token->setOwner($owner);
 
         $this
@@ -117,7 +122,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
         $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 
         $token = new AccessToken();
-        $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+        $owner = $this->getMock(TokenOwnerInterface::class);
         $token->setOwner($owner);
 
         $this
@@ -127,7 +132,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
             ->with($request)
             ->will($this->throwException(new OAuth2Exception('Expired token', 123)));
 
-        $this->setExpectedException('ZfrOAuth2\Server\Exception\OAuth2Exception', 'Expired token', 123);
+        $this->setExpectedException(OAuth2Exception::class, 'Expired token', 123);
 
         $this->authenticationService->getIdentity();
     }
@@ -142,7 +147,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnNonHttpRequest()
     {
-        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+        $request = $this->getMock(RequestInterface::class);
 
         $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
 

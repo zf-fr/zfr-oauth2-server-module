@@ -16,33 +16,56 @@
  * and is licensed under the MIT license.
  */
 
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use ZfrOAuth2\Server\AuthorizationServer;
+use ZfrOAuth2\Server\ResourceServer;
+use ZfrOAuth2\Server\Service\ClientService;
+use ZfrOAuth2\Server\Service\ScopeService;
+use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
+use ZfrOAuth2Module\Server\Controller\AuthorizationController;
+use ZfrOAuth2Module\Server\Controller\TokenController;
+use ZfrOAuth2Module\Server\Factory\AccessTokenServiceFactory;
+use ZfrOAuth2Module\Server\Factory\AccessTokenStorageFactory;
+use ZfrOAuth2Module\Server\Factory\AuthorizationCodeServiceFactory;
+use ZfrOAuth2Module\Server\Factory\AuthorizationControllerFactory;
+use ZfrOAuth2Module\Server\Factory\AuthorizationServerFactory;
+use ZfrOAuth2Module\Server\Factory\ClientServiceFactory;
+use ZfrOAuth2Module\Server\Factory\GrantPluginManagerFactory;
+use ZfrOAuth2Module\Server\Factory\ModuleOptionsFactory;
+use ZfrOAuth2Module\Server\Factory\RefreshTokenServiceFactory;
+use ZfrOAuth2Module\Server\Factory\ResourceServerFactory;
+use ZfrOAuth2Module\Server\Factory\ScopeServiceFactory;
+use ZfrOAuth2Module\Server\Factory\TokenControllerFactory;
+use ZfrOAuth2Module\Server\Grant\GrantPluginManager;
+use ZfrOAuth2Module\Server\Options\ModuleOptions;
+
 return [
     'service_manager' => [
         'factories' => [
             /**
              * Factories that map to a class
              */
-            'ZfrOAuth2\Server\AuthorizationServer'                             => 'ZfrOAuth2Module\Server\Factory\AuthorizationServerFactory',
-            'ZfrOAuth2\Server\ResourceServer'                                  => 'ZfrOAuth2Module\Server\Factory\ResourceServerFactory',
-            'ZfrOAuth2\Server\Service\ClientService'                           => 'ZfrOAuth2Module\Server\Factory\ClientServiceFactory',
-            'ZfrOAuth2\Server\Service\ScopeService'                            => 'ZfrOAuth2Module\Server\Factory\ScopeServiceFactory',
-            'ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage' => 'ZfrOAuth2Module\Server\Factory\AccessTokenStorageFactory',
-            'ZfrOAuth2Module\Server\Options\ModuleOptions'                     => 'ZfrOAuth2Module\Server\Factory\ModuleOptionsFactory',
-            'ZfrOAuth2Module\Server\Grant\GrantPluginManager'                  => 'ZfrOAuth2Module\Server\Factory\GrantPluginManagerFactory',
+            AuthorizationServer::class  => AuthorizationServerFactory::class,
+            ResourceServer::class       => ResourceServerFactory::class,
+            ClientService::class        => ClientServiceFactory::class,
+            ScopeService::class         => ScopeServiceFactory::class,
+            AccessTokenStorage::class   => AccessTokenStorageFactory::class,
+            ModuleOptions::class        => ModuleOptionsFactory::class,
+            GrantPluginManager::class   => GrantPluginManagerFactory::class,
 
             /**
              * Factories that do not map to a class
              */
-            'ZfrOAuth2\Server\Service\AuthorizationCodeService' => 'ZfrOAuth2Module\Server\Factory\AuthorizationCodeServiceFactory',
-            'ZfrOAuth2\Server\Service\AccessTokenService'       => 'ZfrOAuth2Module\Server\Factory\AccessTokenServiceFactory',
-            'ZfrOAuth2\Server\Service\RefreshTokenService'      => 'ZfrOAuth2Module\Server\Factory\RefreshTokenServiceFactory',
+            'ZfrOAuth2\Server\Service\AuthorizationCodeService' => AuthorizationCodeServiceFactory::class,
+            'ZfrOAuth2\Server\Service\AccessTokenService'       => AccessTokenServiceFactory::class,
+            'ZfrOAuth2\Server\Service\RefreshTokenService'      => RefreshTokenServiceFactory::class,
         ]
     ],
 
     'doctrine' => [
         'driver' => [
             'zfr_oauth2_driver' => [
-                'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
+                'class' => XmlDriver::class,
                 'paths' => __DIR__ . '/../../zfr-oauth2-server/config/doctrine',
             ],
             'orm_default' => [
@@ -85,7 +108,7 @@ return [
                         'options' => [
                             'route'    => '/authorize',
                             'defaults' => [
-                                'controller' => 'ZfrOAuth2Module\Server\Controller\AuthorizationController',
+                                'controller' => AuthorizationController::class,
                                 'action'     => 'authorize'
                             ]
                         ]
@@ -96,7 +119,7 @@ return [
                         'options' => [
                             'route'    => '/token',
                             'defaults' => [
-                                'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
+                                'controller' => TokenController::class,
                                 'action'     => 'token'
                             ]
                         ]
@@ -107,7 +130,7 @@ return [
                         'options' => [
                             'route'    => '/revoke',
                             'defaults' => [
-                                'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
+                                'controller' => TokenController::class,
                                 'action'     => 'revoke'
                             ]
                         ]
@@ -125,7 +148,7 @@ return [
                     'options' => [
                         'route'    => 'oauth2 server delete expired tokens',
                         'defaults' => [
-                            'controller' => 'ZfrOAuth2Module\Server\Controller\TokenController',
+                            'controller' => TokenController::class,
                             'action'     => 'delete-expired-tokens'
                         ]
                     ]
@@ -136,8 +159,8 @@ return [
 
     'controllers' => [
         'factories' => [
-            'ZfrOAuth2Module\Server\Controller\AuthorizationController' => 'ZfrOAuth2Module\Server\Factory\AuthorizationControllerFactory',
-            'ZfrOAuth2Module\Server\Controller\TokenController'         => 'ZfrOAuth2Module\Server\Factory\TokenControllerFactory'
+            AuthorizationController::class => AuthorizationControllerFactory::class,
+            TokenController::class         => TokenControllerFactory::class
         ]
     ],
 

@@ -19,8 +19,11 @@
 namespace ZfrOAuth2ModuleTest\Server\Authentication\Storage;
 
 use Zend\Http\Request as HttpRequest;
+use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use ZfrOAuth2\Server\Entity\AccessToken;
+use ZfrOAuth2\Server\Entity\TokenOwnerInterface;
+use ZfrOAuth2\Server\ResourceServer;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
 /**
@@ -51,9 +54,9 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $application          = $this->getMock('Zend\Mvc\Application', [], [], '', false);
+        $application          = $this->getMock(Application::class, [], [], '', false);
         $mvcEvent             = new MvcEvent();
-        $this->resourceServer = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
+        $this->resourceServer = $this->getMock(ResourceServer::class, [], [], '', false);
         $this->request        = new HttpRequest();
         $this->storage        = new AccessTokenStorage($this->resourceServer, $application);
 
@@ -76,7 +79,7 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
     public function testReadOwnerFromAccessToken()
     {
         $token = new AccessToken();
-        $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+        $owner = $this->getMock(TokenOwnerInterface::class);
 
         $token->setOwner($owner);
 
