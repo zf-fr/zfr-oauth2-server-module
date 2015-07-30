@@ -18,9 +18,13 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Authentication\Storage;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Http\Request as HttpRequest;
+use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use ZfrOAuth2\Server\Entity\AccessToken;
+use ZfrOAuth2\Server\Entity\TokenOwnerInterface;
+use ZfrOAuth2\Server\ResourceServer;
 use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
 
 /**
@@ -37,11 +41,6 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
     private $resourceServer;
 
     /**
-     * @var HttpRequest
-     */
-    private $request;
-
-    /**
      * @var AccessTokenStorage
      */
     private $storage;
@@ -51,14 +50,8 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $application          = $this->getMock('Zend\Mvc\Application', [], [], '', false);
-        $mvcEvent             = new MvcEvent();
-        $this->resourceServer = $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false);
-        $this->request        = new HttpRequest();
-        $this->storage        = new AccessTokenStorage($this->resourceServer, $application);
-
-        $application->expects($this->any())->method('getMvcEvent')->will($this->returnValue($mvcEvent));
-        $mvcEvent->setRequest($this->request);
+        $this->resourceServer = $this->getMock(ResourceServer::class, [], [], '', false);
+        $this->storage        = new AccessTokenStorage($this->resourceServer);
     }
 
     public function testIsConsideredAsEmptyIfNoAccessToken()
@@ -66,7 +59,7 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
         $this->resourceServer
             ->expects($this->atLeastOnce())
             ->method('getAccessToken')
-            ->with($this->request)
+            ->with($this->isInstanceOf(ServerRequestInterface::class))
             ->will($this->returnValue(null));
 
         $this->assertTrue($this->storage->isEmpty());
@@ -76,14 +69,14 @@ class AccessTokenStorageTest extends \PHPUnit_Framework_TestCase
     public function testReadOwnerFromAccessToken()
     {
         $token = new AccessToken();
-        $owner = $this->getMock('ZfrOAuth2\Server\Entity\TokenOwnerInterface');
+        $owner = $this->getMock(TokenOwnerInterface::class);
 
         $token->setOwner($owner);
 
         $this->resourceServer
             ->expects($this->atLeastOnce())
             ->method('getAccessToken')
-            ->with($this->request)
+            ->with($this->isInstanceOf(ServerRequestInterface::class))
             ->will($this->returnValue($token));
 
         $this->assertFalse($this->storage->isEmpty());

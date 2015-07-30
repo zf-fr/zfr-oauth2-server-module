@@ -18,8 +18,11 @@
 
 namespace ZfrOAuth2Module\Server\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use Zend\Console\Request as ConsoleRequest;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\Http\Request as HttpRequest;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZfrOAuth2\Server\AuthorizationServer;
 use ZfrOAuth2Module\Server\Exception\RuntimeException;
@@ -55,7 +58,13 @@ class TokenController extends AbstractActionController
             return null;
         }
 
-        return $this->authorizationServer->handleTokenRequest($this->request);
+        // Currently, ZF2 Http Request object is not PSR-7 compliant, therefore we need to create a new one from
+        // globals, and then convert the response back to ZF2 format
+
+        $request  = ServerRequestFactory::fromGlobals();
+        $response = $this->authorizationServer->handleTokenRequest($request);
+
+        return $this->convertToZfResponse($response);
     }
 
     /**
@@ -70,7 +79,13 @@ class TokenController extends AbstractActionController
             return null;
         }
 
-        return $this->authorizationServer->handleRevocationRequest($this->request);
+        // Currently, ZF2 Http Request object is not PSR-7 compliant, therefore we need to create a new one from
+        // globals, and then convert the response back to ZF2 format
+
+        $request  = ServerRequestFactory::fromGlobals();
+        $response = $this->authorizationServer->handleRevocationRequest($request);
+
+        return $this->convertToZfResponse($response);
     }
 
     /**
@@ -98,5 +113,26 @@ class TokenController extends AbstractActionController
         $authorizationCodeService->deleteExpiredTokens();
 
         return "\nExpired tokens were properly deleted!\n\n";
+    }
+
+    /**
+     * Convert a PSR-7 response to ZF2 response
+     *
+     * @param  ResponseInterface $response
+     * @return HttpResponse
+     */
+    private function convertToZfResponse(ResponseInterface $response)
+    {
+        $zfResponse = new HttpResponse();
+
+        $zfResponse->setStatusCode($response->getStatusCode());
+        $zfResponse->setReasonPhrase($response->getReasonPhrase());
+        $zfResponse->setContent((string) $response->getBody());
+
+        foreach ($response->getHeaders() as $name => $values) {
+            $zfResponse->getHeaders()->addHeaderLine($name, implode(", ", $values));
+        }
+
+        return $zfResponse;
     }
 }

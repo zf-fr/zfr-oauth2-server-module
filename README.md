@@ -10,7 +10,7 @@ compliant server.
 
 ## Requirements
 
-- PHP 5.4 or higher
+- PHP 5.5 or higher
 - [ZfrOAuth2Server](https://github.com/zf-fr/zfr-oauth2-server)
 
 ## Versioning note
@@ -23,7 +23,7 @@ Please note that until I reach 1.0, I **WILL NOT** follow semantic version. This
 Installation is only officially supported using Composer:
 
 ```sh
-php composer.phar require zfr/zfr-oauth2-server-module:0.6.*
+php composer.phar require zfr/zfr-oauth2-server-module:0.7.*
 ```
 
 Copy-paste the `zfr_oauth2_server.global.php.dist` file to your `autoload` folder, and enable the module by adding
@@ -43,11 +43,14 @@ interface. Then, you need to modify the Doctrine mapping to associate this inter
 class. The code is already set in the `zfr_oauth2_server.global.php.dist` file:
 
 ```php
+use Application\Entity\User;
+use ZfrOAuth2\Server\Entity\TokenOwnerInterface;
+
 return [
     'doctrine' => [
         'entity_resolver' => [
             'orm_default' => [
-                'ZfrOAuth2\Server\Entity\TokenOwnerInterface' => 'Application\Entity\User'
+                TokenOwnerInterface::class => Application\Entity\User::class
             ]
         ]
     ]
@@ -61,11 +64,14 @@ want to support. For instance, the following config will make your server compat
 grant as well as the "Refresh token" grant:
 
 ```php
+use ZfrOAuth2\Server\Grant\PasswordGrant;
+use ZfrOAuth2\Server\Grant\RefreshTokenGrant';
+
 return [
     'zfr_oauth2_server' => [
         'grants' => [
-            'ZfrOAuth2\Server\Grant\PasswordGrant',
-            'ZfrOAuth2\Server\Grant\RefreshTokenGrant'
+            PasswordGrant::class,
+            RefreshTokenGrant::class
         ]
     ]
 ]

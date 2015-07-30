@@ -16,28 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrOAuth2Module\Server\Factory;
+namespace ZfrOAuth2ModuleTest\Server\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage;
+use ZfrOAuth2\Server\ResourceServer;
+use ZfrOAuth2Module\Server\Factory\AccessTokenStorageFactory;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ *
+ * @covers ZfrOAuth2Module\Server\Factory\AccessTokenStorageFactory
  */
-class AccessTokenStorageFactory implements FactoryInterface
+class AccessTokenStorageFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function testCanCreateFromFactory()
     {
-        /* @var $resourceServer \ZfrOAuth2\Server\ResourceServer */
-        $resourceServer = $serviceLocator->get('ZfrOAuth2\Server\ResourceServer');
-        /* @var $application \Zend\Mvc\Application */
-        $application = $serviceLocator->get('Application');
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
 
-        return new AccessTokenStorage($resourceServer, $application);
+        $serviceLocator->expects($this->once())
+                       ->method('get')
+                       ->will($this->returnValue($this->getMock(ResourceServer::class, [], [], '', false)));
+
+        $factory = new AccessTokenStorageFactory();
+
+        $this->assertInstanceOf(
+            'ZfrOAuth2Module\Server\Authentication\Storage\AccessTokenStorage',
+            $factory->createService($serviceLocator)
+        );
     }
 }
