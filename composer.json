@@ -26,7 +26,7 @@
     "zendframework/zend-console": "~2.2",
     "zendframework/zend-stdlib": "~2.2",
     "doctrine/doctrine-module": "~0.9",
-    "zfr/zfr-oauth2-server": "dev-psr7 as 0.7.0"
+    "zfr/zfr-oauth2-server": "dev-master as 0.7.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.6",
@@ -35,8 +35,13 @@
     "satooshi/php-coveralls": "~0.6"
   },
   "autoload": {
-    "psr-0": {
+    "psr-4": {
       "ZfrOAuth2Module\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ZfrOAuth2ModuleTest\\": "tests/"
     }
   }
 }
