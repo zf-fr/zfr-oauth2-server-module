@@ -18,6 +18,8 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Controller;
 
+use Psr\Http\Message\RequestInterface as PsrRequestInterface;
+use Zend\Diactoros\Response as PsrResponse;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Stdlib\RequestInterface;
@@ -54,7 +56,7 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
         $controller          = new TokenController($authorizationServer);
 
         $request  = new HttpRequest();
-        $response = new HttpResponse();
+        $response = new PsrResponse();
 
         $reflProperty = new \ReflectionProperty($controller, 'request');
         $reflProperty->setAccessible(true);
@@ -62,10 +64,10 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 
         $authorizationServer->expects($this->once())
                             ->method('handleTokenRequest')
-                            ->with($request)
+                            ->with($this->isInstanceOf(PsrRequestInterface::class))
                             ->will($this->returnValue($response));
 
-        $this->assertSame($response, $controller->tokenAction($request));
+        $this->assertInstanceOf(HttpResponse::class, $controller->tokenAction($request));
     }
 
     public function testCanRevokeToken()
@@ -74,7 +76,7 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
         $controller          = new TokenController($authorizationServer);
 
         $request  = new HttpRequest();
-        $response = new HttpResponse();
+        $response = new PsrResponse();
 
         $reflProperty = new \ReflectionProperty($controller, 'request');
         $reflProperty->setAccessible(true);
@@ -82,9 +84,9 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 
         $authorizationServer->expects($this->once())
                             ->method('handleRevocationRequest')
-                            ->with($request)
+                            ->with($this->isInstanceOf(PsrRequestInterface::class))
                             ->will($this->returnValue($response));
 
-        $this->assertSame($response, $controller->revokeAction($request));
+        $this->assertInstanceOf(HttpResponse::class, $controller->revokeAction($request));
     }
 }

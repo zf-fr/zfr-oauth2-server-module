@@ -35,9 +35,7 @@ class AccessTokenStorageFactory implements FactoryInterface
     {
         /* @var $resourceServer \ZfrOAuth2\Server\ResourceServer */
         $resourceServer = $serviceLocator->get('ZfrOAuth2\Server\ResourceServer');
-        /* @var $application \Zend\Mvc\Application */
-        $application = $serviceLocator->get('Application');
 
-        return new AccessTokenStorage($resourceServer, $application);
+        return new AccessTokenStorage($resourceServer);
     }
 }

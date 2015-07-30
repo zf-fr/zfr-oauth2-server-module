@@ -18,9 +18,9 @@
 
 namespace ZfrOAuth2Module\Server\Authentication\Storage;
 
+use Psr\Http\Message\RequestInterface;
 use Zend\Authentication\Storage\NonPersistent;
-use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\Application;
+use Zend\Diactoros\ServerRequestFactory;
 use ZfrOAuth2\Server\ResourceServer;
 
 /**
@@ -35,18 +35,17 @@ class AccessTokenStorage extends NonPersistent
     protected $resourceServer;
 
     /**
-     * @var Application
+     * @var RequestInterface
      */
-    private $application;
+    private $request;
 
     /**
      * @param ResourceServer $resourceServer
-     * @param Application    $application
      */
-    public function __construct(ResourceServer $resourceServer, Application $application)
+    public function __construct(ResourceServer $resourceServer)
     {
         $this->resourceServer = $resourceServer;
-        $this->application    = $application;
+        $this->request        = ServerRequestFactory::fromGlobals();
     }
 
     /**
@@ -54,9 +53,7 @@ class AccessTokenStorage extends NonPersistent
      */
     public function isEmpty()
     {
-        $request = $this->getCurrentRequest();
-
-        return $request ? $this->resourceServer->getAccessToken($request) === null : true;
+        return $this->request ? $this->resourceServer->getAccessToken($this->request) === null : true;
     }
 
     /**
@@ -64,28 +61,12 @@ class AccessTokenStorage extends NonPersistent
      */
     public function read()
     {
-        $request = $this->getCurrentRequest();
-
-        if (!$request) {
+        if (!$this->request) {
             return null;
         }
 
-        $accessToken = $this->resourceServer->getAccessToken($request);
+        $accessToken = $this->resourceServer->getAccessToken($this->request);
 
         return $accessToken ? $accessToken->getOwner() : null;
-    }
-
-    /**
-     * @return HttpRequest|null
-     */
-    private function getCurrentRequest()
-    {
-        $request = $this->application->getMvcEvent()->getRequest();
-
-        if (!$request instanceof HttpRequest) {
-            return null;
-        }
-
-        return $request;
     }
 }

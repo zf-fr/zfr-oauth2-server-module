@@ -18,6 +18,7 @@
 
 namespace ZfrOAuth2ModuleTest\Server\Factory;
 
+use ZfrOAuth2\Server\ResourceServer;
 use ZfrOAuth2Module\Server\Factory\AccessTokenStorageFactory;
 
 /**
@@ -32,10 +33,9 @@ class AccessTokenStorageFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
 
-        $serviceLocator->expects($this->any())->method('get')->will($this->returnValueMap([
-            ['ZfrOAuth2\Server\ResourceServer',  $this->getMock('ZfrOAuth2\Server\ResourceServer', [], [], '', false)],
-            ['Application', $this->getMock('Zend\Mvc\Application', [], [], '', false)]
-        ]));
+        $serviceLocator->expects($this->once())
+                       ->method('get')
+                       ->will($this->returnValue($this->getMock(ResourceServer::class, [], [], '', false)));
 
         $factory = new AccessTokenStorageFactory();
 

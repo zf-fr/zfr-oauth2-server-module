@@ -19,11 +19,8 @@
 namespace ZfrOAuth2ModuleTest\Server\Authentication\Adapter;
 
 use PHPUnit_Framework_TestCase;
+use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
-use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\Application;
-use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\RequestInterface;
 use ZfrOAuth2\Server\Entity\AccessToken;
 use ZfrOAuth2\Server\Entity\TokenOwnerInterface;
 use ZfrOAuth2\Server\Exception\OAuth2Exception;
@@ -54,30 +51,17 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
     private $authenticationService;
 
     /**
-     * @var \Zend\Mvc\MvcEvent|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $mvcEvent;
-
-    /**
      * {@inheritDoc}
      */
     protected function setUp()
     {
-        $this->mvcEvent              = $this->getMock(MvcEvent::class);
-        $application                 = $this->getMock(Application::class, [], [], '', false);
         $this->resourceServer        = $this->getMock(ResourceServer::class, [], [], '', false);
-        $this->authenticationStorage = new AccessTokenStorage($this->resourceServer, $application);
+        $this->authenticationStorage = new AccessTokenStorage($this->resourceServer);
         $this->authenticationService = new AuthenticationService($this->authenticationStorage);
-
-        $application->expects($this->any())->method('getMvcEvent')->will($this->returnValue($this->mvcEvent));
     }
 
     public function testSuccessAuthenticationOnValidToken()
     {
-        $request = new HttpRequest();
-
-        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
-
         $token = new AccessToken();
         $owner = $this->getMock(TokenOwnerInterface::class);
         $token->setOwner($owner);
@@ -86,7 +70,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
             ->resourceServer
             ->expects($this->atLeastOnce())
             ->method('getAccessToken')
-            ->with($request)
+            ->with($this->isInstanceOf(PsrServerRequestInterface::class))
             ->will($this->returnValue($token));
 
 
@@ -96,10 +80,6 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnNoToken()
     {
-        $request = new HttpRequest();
-
-        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
-
         $token = new AccessToken();
         $owner = $this->getMock(TokenOwnerInterface::class);
         $token->setOwner($owner);
@@ -108,7 +88,7 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
             ->resourceServer
             ->expects($this->atLeastOnce())
             ->method('getAccessToken')
-            ->with($request)
+            ->with($this->isInstanceOf(PsrServerRequestInterface::class))
             ->will($this->returnValue(null));
 
         $this->assertFalse($this->authenticationService->hasIdentity());
@@ -117,10 +97,6 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFailAuthenticationOnExpiredToken()
     {
-        $request = new HttpRequest();
-
-        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
-
         $token = new AccessToken();
         $owner = $this->getMock(TokenOwnerInterface::class);
         $token->setOwner($owner);
@@ -129,31 +105,11 @@ class AuthenticationFunctionalTest extends PHPUnit_Framework_TestCase
             ->resourceServer
             ->expects($this->atLeastOnce())
             ->method('getAccessToken')
-            ->with($request)
+            ->with($this->isInstanceOf(PsrServerRequestInterface::class))
             ->will($this->throwException(new OAuth2Exception('Expired token', 123)));
 
         $this->setExpectedException(OAuth2Exception::class, 'Expired token', 123);
 
         $this->authenticationService->getIdentity();
-    }
-
-    public function testFailAuthenticationOnNoRequest()
-    {
-        $this->resourceServer->expects($this->never())->method('getAccessToken');
-
-        $this->assertFalse($this->authenticationService->hasIdentity());
-        $this->assertNull($this->authenticationService->getIdentity());
-    }
-
-    public function testFailAuthenticationOnNonHttpRequest()
-    {
-        $request = $this->getMock(RequestInterface::class);
-
-        $this->mvcEvent->expects($this->any())->method('getRequest')->will($this->returnValue($request));
-
-        $this->resourceServer->expects($this->never())->method('getAccessToken');
-
-        $this->assertFalse($this->authenticationService->hasIdentity());
-        $this->assertNull($this->authenticationService->getIdentity());
     }
 }
